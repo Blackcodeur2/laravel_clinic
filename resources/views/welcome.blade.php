@@ -19,11 +19,9 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
                     <a href="/" class="flex items-center gap-2.5 group">
-                        <span class="flex items-center justify-center w-9 h-9 rounded-xl bg-clinic-600 text-white shadow-sm group-hover:bg-clinic-700 transition-colors">
-                            <i class="bi bi-heart-pulse-fill text-lg"></i>
-                        </span>
-                        <span class="font-semibold text-lg text-slate-900">{{ config('app.name', 'MyClinic') }}</span>
+                        <x-application-logo class="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                     </a>
+
 
                     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
                         <a href="#fonctionnalites" class="hover:text-clinic-600 transition-colors">Fonctionnalités</a>
@@ -63,127 +61,48 @@
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-clinic-200/30 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 left-0 w-72 h-72 bg-teal-200/20 rounded-full blur-3xl"></div>
 
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                    <div>
-                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-clinic-100 text-clinic-700 text-sm font-medium mb-6">
-                            <i class="bi bi-shield-check"></i>
-                            Solution dédiée aux cliniques de santé
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight tracking-tight">
-                            La facturation de votre clinique,
-                            <span class="text-clinic-600">simplifiée</span>
-                        </h1>
-                        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-xl">
-                            Gérez vos patients, émettez des factures, suivez les paiements et pilotez votre activité depuis une seule interface intuitive.
-                        </p>
-                        <div class="mt-8 flex flex-wrap gap-4">
-                            @if (Route::has('register'))
-                                <a href="{{ Route::has('register') ? route('register') : '#' }}" class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold text-white bg-clinic-600 rounded-xl hover:bg-clinic-700 transition-all shadow-lg shadow-clinic-600/25 hover:shadow-clinic-600/40">
-                                    <i class="bi bi-rocket-takeoff-fill"></i>
-                                    Commencer gratuitement
-                                </a>
-                            @endif
-                            <a href="#fonctionnalites" class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold text-clinic-700 bg-white border border-clinic-200 rounded-xl hover:bg-clinic-50 transition-colors">
-                                <i class="bi bi-play-circle"></i>
-                                Découvrir
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-clinic-100 text-clinic-700 text-sm font-medium mb-6">
+                        <i class="bi bi-shield-check"></i>
+                        Solution dédiée aux cliniques de santé
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
+                        La facturation de votre clinique,
+                        <span class="text-clinic-600">simplifiée</span>
+                    </h1>
+                    <p class="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
+                        Gérez vos patients, émettez des factures, suivez les paiements et pilotez votre activité depuis une seule interface intuitive.
+                    </p>
+                    <div class="mt-10 flex flex-wrap justify-center gap-4">
+                        @if (Route::has('register'))
+                            <a href="{{ Route::has('register') ? route('register') : '#' }}" class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold text-white bg-clinic-600 rounded-xl hover:bg-clinic-700 transition-all shadow-lg shadow-clinic-600/25 hover:shadow-clinic-600/40">
+                                <i class="bi bi-rocket-takeoff-fill"></i>
+                                Commencer gratuitement
                             </a>
-                        </div>
-                        <div class="mt-10 flex flex-wrap gap-6 text-sm text-slate-500">
-                            <span class="inline-flex items-center gap-2">
-                                <i class="bi bi-check-circle-fill text-clinic-500"></i>
-                                Sans engagement
-                            </span>
-                            <span class="inline-flex items-center gap-2">
-                                <i class="bi bi-check-circle-fill text-clinic-500"></i>
-                                Données sécurisées
-                            </span>
-                            <span class="inline-flex items-center gap-2">
-                                <i class="bi bi-check-circle-fill text-clinic-500"></i>
-                                Support réactif
-                            </span>
-                        </div>
+                        @endif
+                        <a href="#fonctionnalites" class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold text-clinic-700 bg-white border border-clinic-200 rounded-xl hover:bg-clinic-50 transition-colors">
+                            <i class="bi bi-play-circle"></i>
+                            Découvrir
+                        </a>
                     </div>
-
-                    {{-- Mock dashboard preview --}}
-                    <div class="relative lg:pl-8">
-                        <div class="bg-white rounded-2xl shadow-2xl shadow-slate-200/60 border border-slate-200 overflow-hidden">
-                            <div class="flex items-center gap-2 px-4 py-3 bg-slate-50 border-b border-slate-200">
-                                <span class="w-3 h-3 rounded-full bg-red-400"></span>
-                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-                                <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                                <span class="ml-3 text-xs text-slate-400 font-medium">Tableau de bord — {{ config('app.name') }}</span>
-                            </div>
-                            <div class="p-5 space-y-4">
-                                <div class="grid grid-cols-3 gap-3">
-                                    <div class="p-3 rounded-xl bg-clinic-50 border border-clinic-100">
-                                        <i class="bi bi-people-fill text-clinic-600 text-lg"></i>
-                                        <p class="mt-2 text-2xl font-bold text-slate-900">248</p>
-                                        <p class="text-xs text-slate-500">Patients</p>
-                                    </div>
-                                    <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                                        <i class="bi bi-receipt-cutoff text-emerald-600 text-lg"></i>
-                                        <p class="mt-2 text-2xl font-bold text-slate-900">1 420</p>
-                                        <p class="text-xs text-slate-500">Factures</p>
-                                    </div>
-                                    <div class="p-3 rounded-xl bg-blue-50 border border-blue-100">
-                                        <i class="bi bi-cash-stack text-blue-600 text-lg"></i>
-                                        <p class="mt-2 text-2xl font-bold text-slate-900">89%</p>
-                                        <p class="text-xs text-slate-500">Encaissé</p>
-                                    </div>
-                                </div>
-                                <div class="rounded-xl border border-slate-200 overflow-hidden">
-                                    <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                                        <span class="text-sm font-semibold text-slate-700">Dernières factures</span>
-                                        <span class="text-xs text-clinic-600 font-medium">Voir tout</span>
-                                    </div>
-                                    <div class="divide-y divide-slate-100">
-                                        <div class="flex items-center justify-between px-4 py-2.5">
-                                            <div class="flex items-center gap-3">
-                                                <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-semibold">M</span>
-                                                <div>
-                                                    <p class="text-sm font-medium text-slate-800">Marie Dupont</p>
-                                                    <p class="text-xs text-slate-400">45 000 FCFA</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Payée</span>
-                                        </div>
-                                        <div class="flex items-center justify-between px-4 py-2.5">
-                                            <div class="flex items-center gap-3">
-                                                <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-semibold">J</span>
-                                                <div>
-                                                    <p class="text-sm font-medium text-slate-800">Jean Kouassi</p>
-                                                    <p class="text-xs text-slate-400">32 500 FCFA</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">En attente</span>
-                                        </div>
-                                        <div class="flex items-center justify-between px-4 py-2.5">
-                                            <div class="flex items-center gap-3">
-                                                <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-semibold">A</span>
-                                                <div>
-                                                    <p class="text-sm font-medium text-slate-800">Aminata Traoré</p>
-                                                    <p class="text-xs text-slate-400">18 000 FCFA</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Payée</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg border border-slate-200 px-4 py-3 flex items-center gap-3">
-                            <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600">
-                                <i class="bi bi-graph-up-arrow text-lg"></i>
-                            </span>
-                            <div>
-                                <p class="text-xs text-slate-500">Revenus ce mois</p>
-                                <p class="text-sm font-bold text-slate-900">+12,4 %</p>
-                            </div>
-                        </div>
+                    <div class="mt-12 flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-clinic-500"></i>
+                            Sans engagement
+                        </span>
+                        <span class="inline-flex items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-clinic-500"></i>
+                            Données sécurisées
+                        </span>
+                        <span class="inline-flex items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-clinic-500"></i>
+                            Support réactif
+                        </span>
                     </div>
                 </div>
             </div>
+
         </section>
 
         {{-- Stats --}}
@@ -367,11 +286,9 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="flex items-center gap-2.5">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-clinic-600 text-white">
-                            <i class="bi bi-heart-pulse-fill"></i>
-                        </span>
-                        <span class="font-semibold text-white">{{ config('app.name', 'MyClinic') }}</span>
+                        <x-application-logo class="h-8 w-auto object-contain" />
                     </div>
+
                     <p class="text-sm text-center">
                         &copy; {{ date('Y') }} {{ config('app.name') }}. Logiciel de facturation pour cliniques de santé.
                     </p>

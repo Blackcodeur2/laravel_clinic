@@ -35,22 +35,22 @@
         @endcan
     </div>
 
-    <div class="rounded-2xl bg-gray-50 border border-gray-200 overflow-hidden">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-gray-200">
-                    <th class="text-left text-gray-500 font-medium px-6 py-3.5">N° Facture</th>
-                    <th class="text-left text-gray-500 font-medium px-6 py-3.5 hidden md:table-cell">Patient</th>
-                    <th class="text-left text-gray-500 font-medium px-6 py-3.5 hidden lg:table-cell">Date</th>
-                    <th class="text-right text-gray-500 font-medium px-6 py-3.5">Total</th>
-                    <th class="text-right text-gray-500 font-medium px-6 py-3.5 hidden sm:table-cell">Payé</th>
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+        <table class="min-w-full text-sm align-middle">
+            <thead class="bg-gray-50/50">
+                <tr class="border-b border-gray-100">
+                    <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">N° Facture</th>
+                    <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4 hidden md:table-cell">Patient</th>
+                    <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Date</th>
+                    <th class="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Total</th>
+                    <th class="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4 hidden sm:table-cell">Payé</th>
                     <th class="text-center text-gray-500 font-medium px-6 py-3.5">Statut</th>
-                    <th class="text-right text-gray-500 font-medium px-6 py-3.5">Actions</th>
+                    <th class="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800">
+            <tbody class="divide-y divide-gray-100 bg-white">
                 @forelse($factures as $facture)
-                    <tr class="hover:bg-white transition-colors">
+                    <tr class="hover:bg-gray-50/50 transition-colors group">
                         <td class="px-6 py-4">
                             <a href="{{ route('factures.show', $facture) }}"
                                class="text-blue-600 hover:text-cyan-300 font-mono font-medium transition-colors">
@@ -75,19 +75,17 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('factures.show', $facture) }}"
-                                   class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs rounded-lg hover:bg-gray-100 transition-colors">
+                                   class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center">
                                     Voir
                                 </a>
                                 <a href="{{ route('factures.pdf', $facture) }}" target="_blank"
-                                   class="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 text-indigo-600 text-xs rounded-lg hover:bg-blue-500/20 transition-colors">
-                                    PDF
-                                </a>
+                                   class="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 text-indigo-600 text-xs rounded-lg hover:bg-blue-500/20 transition-colors"> <i class='bi bi-file-earmark-pdf text-lg'></i></a>
                                 @can('delete', $facture)
                                     <form method="POST" action="{{ route('factures.destroy', $facture) }}"
                                           onsubmit="return confirm('Supprimer cette facture ?')">
                                         @csrf @method('DELETE')
                                         <button type="submit"
-                                                class="px-3 py-1.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-lg hover:bg-red-500/20 transition-colors">
+                                                class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center">
                                             Sup.
                                         </button>
                                     </form>

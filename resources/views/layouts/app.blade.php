@@ -85,13 +85,15 @@
         {{-- User area --}}
         <div class="border-t border-slate-800 p-4">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-gray-900 text-sm font-bold flex-shrink-0">
-                    {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-medium truncate">{{ auth()->user()->prenom }} {{ auth()->user()->nom }}</p>
-                    <p class="text-slate-400 text-xs truncate">{{ auth()->user()->role?->nom }}</p>
-                </div>
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 flex-1 min-w-0 group hover:opacity-80 transition-opacity" title="Mon Profil">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-gray-900 text-sm font-bold flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all">
+                        {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm font-medium truncate group-hover:text-violet-300 transition-colors">{{ auth()->user()->prenom }} {{ auth()->user()->nom }}</p>
+                        <p class="text-slate-400 text-xs truncate">{{ auth()->user()->role?->nom }}</p>
+                    </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
@@ -150,27 +152,39 @@
         {{-- Page content --}}
         <main class="flex-1 px-4 sm:px-6 lg:px-8 py-8">
 
-            {{-- Flash messages --}}
-            @if(session('success'))
-                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
-                     x-transition:leave="transition ease-in duration-300"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-green-600 text-sm">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            @endif
+            {{-- Flash messages (handled by SweetAlert2 via JS) --}}
+            @if(session('success') || session('error') || $errors->has('error'))
+                <script type="module">
+                    document.addEventListener('DOMContentLoaded', () => {
+                        if (window.Swal) {
+                            const Toast = window.Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', window.Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', window.Swal.resumeTimer)
+                                }
+                            });
 
-            @if(session('error') || $errors->has('error'))
-                <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    {{ session('error') ?? $errors->first('error') }}
-                </div>
+                            @if(session('success'))
+                            Toast.fire({
+                                icon: 'success',
+                                title: "{{ session('success') }}"
+                            });
+                            @endif
+
+                            @if(session('error') || $errors->has('error'))
+                            Toast.fire({
+                                icon: 'error',
+                                title: "{{ session('error') ?? $errors->first('error') }}"
+                            });
+                            @endif
+                        }
+                    });
+                </script>
             @endif
 
             {{ $slot }}

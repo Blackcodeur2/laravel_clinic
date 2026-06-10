@@ -6,6 +6,7 @@ use App\Models\Facture;
 use App\Models\Paiement;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PdfService
 {
@@ -14,7 +15,12 @@ class PdfService
      */
     public function generateFacture(Facture $facture): Response
     {
-        $pdf = Pdf::loadView('pdf.facture', compact('facture'))
+        $qrCodeUrl = route('verify.facture', $facture->verification_token);
+        $qrCode = base64_encode(
+            QrCode::format('svg')->size(120)->margin(1)->generate($qrCodeUrl)
+        );
+
+        $pdf = Pdf::loadView('pdf.facture', compact('facture', 'qrCode', 'qrCodeUrl'))
             ->setPaper('a4', 'portrait');
 
         return $pdf->download("facture-{$facture->numero_facture}.pdf");
@@ -25,7 +31,12 @@ class PdfService
      */
     public function generateRecu(Paiement $paiement): Response
     {
-        $pdf = Pdf::loadView('pdf.recu', compact('paiement'))
+        $qrCodeUrl = route('verify.recu', $paiement->verification_token);
+        $qrCode = base64_encode(
+            QrCode::format('svg')->size(120)->margin(1)->generate($qrCodeUrl)
+        );
+
+        $pdf = Pdf::loadView('pdf.recu', compact('paiement', 'qrCode', 'qrCodeUrl'))
             ->setPaper('a4', 'portrait');
 
         return $pdf->download("recu-{$paiement->id}.pdf");

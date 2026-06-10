@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClinicSettingController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FactureController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceMedicalController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -48,6 +50,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Utilisateurs (admin only)
     Route::resource('users', UserController::class);
+
+    // Paramètres de la clinique (admin only)
+    Route::get('settings', [ClinicSettingController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [ClinicSettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';
+
+// Public QR code verification (no auth required)
+Route::get('/verify/facture/{token}', [VerificationController::class, 'facture'])->name('verify.facture');
+Route::get('/verify/recu/{token}', [VerificationController::class, 'recu'])->name('verify.recu');

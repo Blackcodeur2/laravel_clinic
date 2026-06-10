@@ -69,12 +69,35 @@
             color: #28a745;
         }
         .footer {
-            margin-top: 100px;
+            margin-top: 40px;
             border-top: 1px solid #ddd;
             padding-top: 20px;
             font-size: 11px;
             color: #777;
             text-align: center;
+        }
+        .qr-section {
+            margin-top: 30px;
+            border-top: 1px dashed #ccc;
+            padding-top: 15px;
+        }
+        .qr-section table {
+            width: 100%;
+        }
+        .qr-url {
+            font-size: 9px;
+            color: #888;
+            word-break: break-all;
+        }
+        .qr-badge {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -84,14 +107,14 @@
             <table>
                 <tr>
                     <td>
-                        <span class="logo-text">MyClinic</span><br>
-                        <span style="font-size: 12px; color: #555;">Système de Facturation Médicale</span>
+                        <span class="logo-text">{{ $clinicSettings->nom_clinique }}</span><br>
+                        <span style="font-size: 12px; color: #555;">{{ $clinicSettings->slogan ?: 'Système de Facturation Médicale' }}</span>
                     </td>
                     <td class="clinic-info">
-                        <strong>Clinique Médicale MyClinic</strong><br>
-                        Rue de la Santé, BP 1234<br>
-                        Tél: +237 600 000 000<br>
-                        Email: contact@myclinic.com
+                        <strong>{{ $clinicSettings->nom_clinique }}</strong><br>
+                        @if($clinicSettings->adresse) {{ $clinicSettings->adresse }}@if($clinicSettings->ville), {{ $clinicSettings->ville }}@endif<br>@endif
+                        @if($clinicSettings->telephone) Tél: {{ $clinicSettings->telephone }}<br>@endif
+                        @if($clinicSettings->email) Email: {{ $clinicSettings->email }}@endif
                     </td>
                 </tr>
             </table>
@@ -145,9 +168,30 @@
             </tr>
         </table>
 
+        <div class="qr-section">
+            <table>
+                <tr>
+                    <td style="width: 140px; text-align: center;">
+                        <img src="data:image/svg+xml;base64,{{ $qrCode }}" width="120" height="120" alt="QR Code">
+                        <div>
+                            <span class="qr-badge">✓ REÇU AUTHENTIQUE</span>
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle; padding-left: 20px;">
+                        <p style="font-size: 12px; font-weight: bold; margin: 0 0 5px 0; color: #28a745;">Authenticité vérifiable par QR Code</p>
+                        <p style="font-size: 11px; color: #555; margin: 0 0 8px 0;">
+                            Scannez ce code QR pour vérifier l'authenticité de ce reçu.<br>
+                            Réf. Facture : <strong>{{ $paiement->facture->numero_facture }}</strong>
+                        </p>
+                        <p class="qr-url">{{ $qrCodeUrl }}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
         <div class="footer">
             <p>Ce reçu atteste du versement de la somme mentionnée ci-dessus.</p>
-            <p>MyClinic - Logiciel de Facturation Médicale Certifié - Généré le {{ date('d/m/Y H:i') }}</p>
+            <p>{{ $clinicSettings->nom_clinique }} - Logiciel de Facturation Médicale Certifié - Généré le {{ date('d/m/Y H:i') }}</p>
         </div>
     </div>
 </body>

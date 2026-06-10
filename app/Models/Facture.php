@@ -7,11 +7,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
-#[Fillable(['consultation_id', 'numero_facture', 'date_facture', 'montant_total', 'montant_paye', 'reste_a_payer', 'statut'])]
+#[Fillable(['consultation_id', 'numero_facture', 'date_facture', 'montant_total', 'montant_paye', 'reste_a_payer', 'statut', 'verification_token'])]
 class Facture extends Model
 {
     use HasFactory;
+
+    /**
+     * Auto-generate a unique verification token on creation.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $facture) {
+            $facture->verification_token ??= Str::random(48);
+        });
+    }
 
     /**
      * Get the consultation.

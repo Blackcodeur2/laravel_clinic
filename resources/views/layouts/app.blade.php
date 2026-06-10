@@ -25,8 +25,8 @@
                 </svg>
             </div>
             <div>
-                <span class="text-white font-bold text-lg leading-none">MyClinic</span>
-                <p class="text-slate-400 text-xs mt-0.5">Système de facturation</p>
+                <span class="text-white font-bold text-lg leading-none">{{ $clinicSettings->nom_clinique }}</span>
+                <p class="text-slate-400 text-xs mt-0.5">{{ $clinicSettings->slogan ?: 'Système de facturation' }}</p>
             </div>
         </div>
 
@@ -78,6 +78,10 @@
                 <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')"
                             icon="users">
                     Utilisateurs
+                </x-nav-link>
+                <x-nav-link href="{{ route('settings.edit') }}" :active="request()->routeIs('settings.*')"
+                            icon="cog-6-tooth">
+                    Paramètres clinique
                 </x-nav-link>
             @endif
         </nav>

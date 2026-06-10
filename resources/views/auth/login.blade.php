@@ -3,8 +3,8 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-bold text-slate-900">{{ __('Connexion') }}</h2>
-        <p class="text-sm text-slate-500 mt-1">Accédez à votre espace MyClinic</p>
+        <h2 class="text-2xl font-bold text-gray-900">{{ __('Connexion') }}</h2>
+        <p class="text-sm text-gray-400 mt-1">Accédez à votre espace MyClinic</p>
     </div>
 
     <form method="POST" action="{{ route('login') }}">
@@ -31,8 +31,8 @@
         <!-- Remember Me & Forgot Password -->
         <div class="flex items-center justify-between mt-4">
             <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-slate-300 text-clinic-600 shadow-sm focus:ring-clinic-500 focus:border-clinic-500" name="remember">
-                <span class="ms-2 text-sm text-slate-600">{{ __('Remember me') }}</span>
+                <input id="remember_me" type="checkbox" class="rounded border-gray-200 text-clinic-600 shadow-sm focus:ring-clinic-500 focus:border-clinic-500" name="remember">
+                <span class="ms-2 text-sm text-gray-900">{{ __('Remember me') }}</span>
             </label>
 
             @if (Route::has('password.request'))

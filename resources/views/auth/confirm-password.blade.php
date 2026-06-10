@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-bold text-slate-900">{{ __('Zone sécurisée') }}</h2>
-        <p class="text-sm text-slate-500 mt-1 leading-relaxed">
+        <h2 class="text-2xl font-bold text-gray-900">{{ __('Zone sécurisée') }}</h2>
+        <p class="text-sm text-gray-400 mt-1 leading-relaxed">
             {{ __('Il s\'agit d\'une zone sécurisée. Veuillez confirmer votre mot de passe pour continuer.') }}
         </p>
     </div>

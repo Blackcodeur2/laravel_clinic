@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-bold text-slate-900">{{ __('Nouveau mot de passe') }}</h2>
-        <p class="text-sm text-slate-500 mt-1">Choisissez un nouveau mot de passe sécurisé</p>
+        <h2 class="text-2xl font-bold text-gray-900">{{ __('Nouveau mot de passe') }}</h2>
+        <p class="text-sm text-gray-400 mt-1">Choisissez un nouveau mot de passe sécurisé</p>
     </div>
 
     <form method="POST" action="{{ route('password.store') }}">

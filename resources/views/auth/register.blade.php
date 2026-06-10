@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-bold text-slate-900">{{ __('Inscription') }}</h2>
-        <p class="text-sm text-slate-500 mt-1">Créez votre compte professionnel MyClinic</p>
+        <h2 class="text-2xl font-bold text-gray-900">{{ __('Inscription') }}</h2>
+        <p class="text-sm text-gray-400 mt-1">Créez votre compte professionnel MyClinic</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}">
@@ -47,7 +47,7 @@
         </div>
     </form>
 
-    <div class="mt-6 text-center text-sm text-slate-500 border-t border-slate-100 pt-6">
+    <div class="mt-6 text-center text-sm text-gray-400 border-t border-gray-200 pt-6">
         Déjà un compte ? 
         <a href="{{ route('login') }}" class="font-semibold text-clinic-600 hover:text-clinic-700 transition-colors">
             Se connecter

@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-bold text-slate-900">{{ __('Vérifiez votre email') }}</h2>
-        <p class="text-sm text-slate-500 mt-1 leading-relaxed">
+        <h2 class="text-2xl font-bold text-gray-900">{{ __('Vérifiez votre email') }}</h2>
+        <p class="text-sm text-gray-400 mt-1 leading-relaxed">
             {{ __('Merci pour votre inscription ! Avant de commencer, veuillez valider votre adresse email en cliquant sur le lien que nous venons de vous envoyer.') }}
         </p>
     </div>
@@ -25,7 +25,7 @@
 
         <form method="POST" action="{{ route('logout') }}" class="w-full sm:w-auto">
             @csrf
-            <button type="submit" class="w-full text-center text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors py-2 px-4 rounded-xl border border-slate-200 hover:bg-slate-50">
+            <button type="submit" class="w-full text-center text-sm font-semibold text-gray-400 hover:text-gray-900 transition-colors py-2 px-4 rounded-xl border border-gray-200 hover:bg-gray-200">
                 {{ __('Se déconnecter') }}
             </button>
         </form>

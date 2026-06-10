@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-bold text-slate-900">{{ __('Mot de passe oublié ?') }}</h2>
-        <p class="text-sm text-slate-500 mt-1 leading-relaxed">
+        <h2 class="text-2xl font-bold text-gray-900">{{ __('Mot de passe oublié ?') }}</h2>
+        <p class="text-sm text-gray-400 mt-1 leading-relaxed">
             {{ __('Indiquez votre adresse e-mail et nous vous enverrons un lien de réinitialisation de mot de passe.') }}
         </p>
     </div>
@@ -26,7 +26,7 @@
         </div>
     </form>
 
-    <div class="mt-6 text-center text-sm text-slate-500 border-t border-slate-100 pt-6">
+    <div class="mt-6 text-center text-sm text-gray-400 border-t border-gray-200 pt-6">
         <a href="{{ route('login') }}" class="font-semibold text-clinic-600 hover:text-clinic-700 transition-colors">
             {{ __('Retour à la connexion') }}
         </a>

@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-slate-800 antialiased bg-slate-50">
+    <body class="font-sans text-gray-900 antialiased bg-gray-200">
         <div class="min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-clinic-50 via-white to-teal-50 relative overflow-hidden">
             {{-- Background decorative elements --}}
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-clinic-200/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -28,7 +28,7 @@
                 </div>
 
 
-                <div class="w-full bg-white rounded-2xl border border-slate-200/60 shadow-2xl shadow-slate-200/80 overflow-hidden p-6 sm:p-8">
+                <div class="w-full bg-white rounded-2xl border border-gray-200/60 shadow-2xl shadow-slate-200/80 overflow-hidden p-6 sm:p-8">
                     {{ $slot }}
                 </div>
             </div>

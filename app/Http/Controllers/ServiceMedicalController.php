@@ -11,16 +11,18 @@ use Illuminate\View\View;
 
 class ServiceMedicalController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', ServiceMedical::class);
-        $services = ServiceMedical::latest()->get();
+        $services = ServiceMedical::latest()->paginate(20);
+
         return view('services.index', compact('services'));
     }
 
     public function create(): View
     {
         Gate::authorize('create', ServiceMedical::class);
+
         return view('services.create');
     }
 
@@ -36,6 +38,7 @@ class ServiceMedicalController extends Controller
     public function edit(ServiceMedical $service): View
     {
         Gate::authorize('update', $service);
+
         return view('services.edit', compact('service'));
     }
 

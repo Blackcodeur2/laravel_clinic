@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'username', 'email', 'password'])]
+#[Fillable(['nom', 'prenom', 'username', 'email', 'password', 'role_id'])]
 
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -29,5 +29,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the role of the user.
+     */
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get consultations managed by this user (as a doctor).
+     */
+    public function consultations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Consultation::class, 'medecin_id');
+    }
+
+    /**
+     * Check if user is an Admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role && $this->role->nom === 'ADMIN';
+    }
+
+    /**
+     * Check if user is a Responsable (e.g. Doctor).
+     */
+    public function isResponsable(): bool
+    {
+        return $this->role && $this->role->nom === 'RESPONSABLE';
+    }
+
+    /**
+     * Check if user is a Caissier (Reception).
+     */
+    public function isCaissier(): bool
+    {
+        return $this->role && $this->role->nom === 'CAISSIER';
     }
 }

@@ -20,17 +20,24 @@ class ConsultationController extends Controller
         protected FactureService $factureService
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', Consultation::class);
-        $consultations = $this->consultationRepository->all();
-        return view('consultations.index', compact('consultations'));
+
+        $filters = $request->only(['search', 'medecin_id', 'date_consultation']);
+        $consultations = $this->consultationRepository->all($filters);
+
+        $medecins = User::whereHas('role', function ($query) {
+            $query->where('nom', 'RESPONSABLE');
+        })->orderBy('nom')->get();
+
+        return view('consultations.index', compact('consultations', 'medecins'));
     }
 
     public function create(): View
     {
         Gate::authorize('create', Consultation::class);
-        
+
         $patients = Patient::orderBy('nom')->get();
         // Fetch users who are doctors (RESPONSABLE)
         $medecins = User::whereHas('role', function ($query) {
@@ -43,9 +50,9 @@ class ConsultationController extends Controller
     public function store(ConsultationRequest $request): RedirectResponse
     {
         Gate::authorize('create', Consultation::class);
-        
+
         $consultation = $this->consultationRepository->create($request->validated());
-        
+
         // Auto create the invoice
         $this->factureService->createFactureForConsultation($consultation);
 
@@ -57,13 +64,14 @@ class ConsultationController extends Controller
     {
         Gate::authorize('view', $consultation);
         $consultation->load(['patient', 'medecin', 'facture.ligneFactures.serviceMedical', 'facture.ligneFactures.medicament', 'facture.paiements']);
+
         return view('consultations.show', compact('consultation'));
     }
 
     public function edit(Consultation $consultation): View
     {
         Gate::authorize('update', $consultation);
-        
+
         $patients = Patient::orderBy('nom')->get();
         $medecins = User::whereHas('role', function ($query) {
             $query->where('nom', 'RESPONSABLE');

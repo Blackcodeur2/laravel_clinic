@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface PatientRepositoryInterface
 {
-    public function all(): Collection;
+    public function all(array $filters = []): Collection;
 
     public function find(int $id): ?Patient;
 

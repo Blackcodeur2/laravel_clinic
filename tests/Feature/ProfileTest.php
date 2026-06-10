@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
@@ -85,4 +87,30 @@ test('correct password must be provided to delete account', function () {
         ->assertRedirect('/profile');
 
     $this->assertNotNull($user->fresh());
+});
+
+test('profile photo can be uploaded', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $file = UploadedFile::fake()->image('avatar.jpg');
+
+    $response = $this
+        ->actingAs($user)
+        ->patch('/profile', [
+            'nom' => 'Test',
+            'prenom' => 'User',
+            'email' => 'test@example.com',
+            'photo_profile' => $file,
+        ]);
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/profile');
+
+    $user->refresh();
+
+    $this->assertNotNull($user->photo_profile);
+    Storage::disk('public')->assertExists($user->photo_profile);
 });

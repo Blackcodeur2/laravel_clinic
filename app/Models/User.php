@@ -7,10 +7,12 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['nom', 'prenom', 'username', 'email', 'password', 'role_id'])]
+#[Fillable(['nom', 'prenom', 'username', 'email', 'password', 'role_id', 'photo_profile'])]
 
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -34,7 +36,7 @@ class User extends Authenticatable
     /**
      * Get the role of the user.
      */
-    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
@@ -42,7 +44,7 @@ class User extends Authenticatable
     /**
      * Get consultations managed by this user (as a doctor).
      */
-    public function consultations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function consultations(): HasMany
     {
         return $this->hasMany(Consultation::class, 'medecin_id');
     }

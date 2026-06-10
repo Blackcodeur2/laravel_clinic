@@ -16,9 +16,19 @@ class MedicamentController extends Controller
         Gate::authorize('viewAny', Medicament::class);
 
         $search = $request->input('search');
+        $statutStock = $request->input('statut_stock');
 
-        $medicaments = Medicament::when($search, fn ($q) => $q->where('nom', 'like', "%{$search}%")
-            ->orWhere('reference', 'like', "%{$search}%"))
+        $medicaments = Medicament::query()
+            ->when($search, function ($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                    ->orWhere('reference', 'like', "%{$search}%");
+            })
+            ->when($statutStock === 'in_stock', function ($q) {
+                $q->where('stock', '>', 0);
+            })
+            ->when($statutStock === 'out_of_stock', function ($q) {
+                $q->where('stock', '=', 0);
+            })
             ->latest()
             ->paginate(15)
             ->withQueryString();

@@ -2,8 +2,21 @@
     <x-slot name="header">Services médicaux</x-slot>
     <x-slot name="title">Services médicaux</x-slot>
 
-    <div class="flex items-center justify-between mb-6">
-        <p class="text-gray-500 text-sm">Catalogue des actes et services facturables</p>
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <form method="GET" action="{{ route('services.index') }}" class="flex flex-wrap gap-3">
+            <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" name="search" value="{{ request('search') }}"
+                       placeholder="Nom, code, desc..."
+                       class="pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm placeholder-slate-400 focus:outline-none focus:border-cyan-500 w-64 transition-colors"/>
+            </div>
+
+            <button type="submit" class="px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm hover:bg-gray-100 transition-colors">
+                Filtrer
+            </button>
+        </form>
 
         @can('create', App\Models\ServiceMedical::class)
             <a href="{{ route('services.create') }}"

@@ -4,7 +4,7 @@
 
     <div class="max-w-2xl">
         <div class="rounded-2xl bg-gray-50 border border-gray-200 p-6">
-            <form method="POST" action="{{ route('users.store') }}" class="space-y-5">
+            <form method="POST" action="{{ route('users.store') }}" class="space-y-5" enctype="multipart/form-data">
                 @csrf
 
                 <div class="grid grid-cols-2 gap-5">
@@ -49,6 +49,13 @@
                     <input type="email" name="email" value="{{ old('email') }}" required
                            class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors @error('email') border-red-500 @enderror"/>
                     @error('email')<p class="mt-1 text-red-400 text-xs">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1.5">Photo de profil</label>
+                    <input type="file" name="photo_profile" accept="image/*"
+                           class="w-full px-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors @error('photo_profile') border-red-500 @enderror"/>
+                    @error('photo_profile')<p class="mt-1 text-red-400 text-xs">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">

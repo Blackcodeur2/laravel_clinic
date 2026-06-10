@@ -14,9 +14,17 @@ class ServiceMedicalController extends Controller
     public function index(Request $request): View
     {
         Gate::authorize('viewAny', ServiceMedical::class);
-        $services = ServiceMedical::latest()->paginate(20);
+        $search = $request->input('search');
 
-        return view('services.index', compact('services'));
+        $services = ServiceMedical::when($search, function ($q) use ($search) {
+            $q->where('nom', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+        })
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('services.index', compact('services', 'search'));
     }
 
     public function create(): View

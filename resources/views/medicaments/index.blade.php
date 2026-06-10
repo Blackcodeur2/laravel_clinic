@@ -12,6 +12,13 @@
                        placeholder="Nom du médicament..."
                        class="pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm placeholder-slate-400 focus:outline-none focus:border-cyan-500 w-60 transition-colors"/>
             </div>
+            <select name="statut_stock"
+                    class="px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm focus:outline-none focus:border-cyan-500 transition-colors">
+                <option value="">Tous les stocks</option>
+                <option value="in_stock" {{ request('statut_stock') === 'in_stock' ? 'selected' : '' }}>En stock</option>
+                <option value="out_of_stock" {{ request('statut_stock') === 'out_of_stock' ? 'selected' : '' }}>Rupture de stock</option>
+            </select>
+
             <button type="submit" class="px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm hover:bg-gray-100 transition-colors">
                 Filtrer
             </button>

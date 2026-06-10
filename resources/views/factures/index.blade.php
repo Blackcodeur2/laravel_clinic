@@ -75,18 +75,23 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('factures.show', $facture) }}"
-                                   class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center">
-                                    Voir
+                                   class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center"
+                                   title="Voir">
+                                    <i class='bi bi-eye text-lg'></i>
                                 </a>
                                 <a href="{{ route('factures.pdf', $facture) }}" target="_blank"
-                                   class="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 text-indigo-600 text-xs rounded-lg hover:bg-blue-500/20 transition-colors"> <i class='bi bi-file-earmark-pdf text-lg'></i></a>
+                                   class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center"
+                                   title="Imprimer PDF">
+                                    <i class='bi bi-file-earmark-pdf text-lg'></i>
+                                </a>
                                 @can('delete', $facture)
                                     <form method="POST" action="{{ route('factures.destroy', $facture) }}"
                                           onsubmit="return confirm('Supprimer cette facture ?')">
                                         @csrf @method('DELETE')
                                         <button type="submit"
-                                                class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center">
-                                            Sup.
+                                                class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center"
+                                                title="Supprimer">
+                                            <i class='bi bi-trash text-lg'></i>
                                         </button>
                                     </form>
                                 @endcan

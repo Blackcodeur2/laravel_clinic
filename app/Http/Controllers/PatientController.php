@@ -20,12 +20,9 @@ class PatientController extends Controller
     {
         Gate::authorize('viewAny', Patient::class);
 
+        $filters = $request->only(['search', 'sexe']);
+        $patients = $this->patientRepository->all($filters);
         $search = $request->input('search');
-        if (!empty($search)) {
-            $patients = $this->patientRepository->search($search);
-        } else {
-            $patients = $this->patientRepository->all();
-        }
 
         return view('patients.index', compact('patients', 'search'));
     }
@@ -33,6 +30,7 @@ class PatientController extends Controller
     public function create(): View
     {
         Gate::authorize('create', Patient::class);
+
         return view('patients.create');
     }
 
@@ -48,6 +46,7 @@ class PatientController extends Controller
     public function edit(Patient $patient): View
     {
         Gate::authorize('update', $patient);
+
         return view('patients.edit', compact('patient'));
     }
 

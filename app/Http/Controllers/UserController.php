@@ -8,17 +8,35 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', User::class);
 
-        $users = User::with('role')->latest()->paginate(15);
+        $query = User::with('role');
 
-        return view('users.index', compact('users'));
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                    ->orWhere('prenom', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('role_id')) {
+            $query->where('role_id', $request->input('role_id'));
+        }
+
+        $users = $query->latest()->paginate(15)->withQueryString();
+        $roles = Role::orderBy('nom')->get();
+
+        return view('users.index', compact('users', 'roles'));
     }
 
     public function create(): View
@@ -41,7 +59,12 @@ class UserController extends Controller
             'email' => ['required', 'email', 'unique:users'],
             'role_id' => ['required', 'exists:roles,id'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'photo_profile' => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('photo_profile')) {
+            $validated['photo_profile'] = $request->file('photo_profile')->store('avatars', 'public');
+        }
 
         $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
@@ -70,7 +93,15 @@ class UserController extends Controller
             'email' => ['required', 'email', 'unique:users,email,'.$user->id],
             'role_id' => ['required', 'exists:roles,id'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'photo_profile' => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('photo_profile')) {
+            if ($user->photo_profile) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            $validated['photo_profile'] = $request->file('photo_profile')->store('avatars', 'public');
+        }
 
         if (empty($validated['password'])) {
             unset($validated['password']);
@@ -87,6 +118,11 @@ class UserController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         Gate::authorize('delete', $user);
+
+        if ($user->photo_profile) {
+            Storage::disk('public')->delete($user->photo_profile);
+        }
+
         $user->delete();
 
         return redirect()->route('users.index')

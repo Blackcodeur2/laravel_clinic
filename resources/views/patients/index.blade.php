@@ -12,6 +12,12 @@
                        placeholder="Rechercher un patient..."
                        class="pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm placeholder-slate-400 focus:outline-none focus:border-cyan-500 w-72 transition-colors"/>
             </div>
+            <select name="sexe"
+                    class="px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm focus:outline-none focus:border-cyan-500 transition-colors">
+                <option value="">Tous les sexes</option>
+                <option value="M" {{ request('sexe') === 'M' ? 'selected' : '' }}>Masculin</option>
+                <option value="F" {{ request('sexe') === 'F' ? 'selected' : '' }}>Féminin</option>
+            </select>
             <button type="submit" class="px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm hover:bg-gray-100 transition-colors">
                 Filtrer
             </button>

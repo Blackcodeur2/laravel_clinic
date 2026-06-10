@@ -7,9 +7,24 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PatientRepository implements PatientRepositoryInterface
 {
-    public function all(): Collection
+    public function all(array $filters = []): Collection
     {
-        return Patient::latest()->get();
+        $query = Patient::latest();
+
+        if (! empty($filters['search'])) {
+            $term = $filters['search'];
+            $query->where(function ($q) use ($term) {
+                $q->where('nom', 'like', "%{$term}%")
+                    ->orWhere('prenom', 'like', "%{$term}%")
+                    ->orWhere('telephone', 'like', "%{$term}%");
+            });
+        }
+
+        if (! empty($filters['sexe'])) {
+            $query->where('sexe', $filters['sexe']);
+        }
+
+        return $query->get();
     }
 
     public function find(int $id): ?Patient
@@ -28,6 +43,7 @@ class PatientRepository implements PatientRepositoryInterface
         if ($patient) {
             return $patient->update($data);
         }
+
         return false;
     }
 
@@ -37,6 +53,7 @@ class PatientRepository implements PatientRepositoryInterface
         if ($patient) {
             return $patient->delete();
         }
+
         return false;
     }
 

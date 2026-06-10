@@ -86,9 +86,13 @@
         <div class="border-t border-slate-800 p-4">
             <div class="flex items-center gap-3">
                 <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 flex-1 min-w-0 group hover:opacity-80 transition-opacity" title="Mon Profil">
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-gray-900 text-sm font-bold flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all">
-                        {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
-                    </div>
+                    @if(auth()->user()->photo_profile)
+                        <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all" />
+                    @else
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-gray-900 text-sm font-bold flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all">
+                            {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
+                        </div>
+                    @endif
                     <div class="flex-1 min-w-0">
                         <p class="text-white text-sm font-medium truncate group-hover:text-violet-300 transition-colors">{{ auth()->user()->prenom }} {{ auth()->user()->nom }}</p>
                         <p class="text-slate-400 text-xs truncate">{{ auth()->user()->role?->nom }}</p>

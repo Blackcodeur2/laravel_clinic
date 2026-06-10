@@ -146,11 +146,16 @@
         <div class="header">
             <table>
                 <tr>
-                    <td>
+                    @if($clinicSettings->logo_path && file_exists(public_path('storage/' . $clinicSettings->logo_path)))
+                        <td style="width: 70px; vertical-align: top;">
+                            <img src="{{ public_path('storage/' . $clinicSettings->logo_path) }}" style="max-height: 60px; max-width: 60px; object-fit: contain;" alt="Logo">
+                        </td>
+                    @endif
+                    <td style="vertical-align: top;">
                         <span class="logo-text">{{ $clinicSettings->nom_clinique }}</span><br>
                         <span style="font-size: 12px; color: #555;">{{ $clinicSettings->slogan ?: 'Système de Facturation Médicale' }}</span>
                     </td>
-                    <td class="clinic-info">
+                    <td class="clinic-info" style="vertical-align: top;">
                         <strong>{{ $clinicSettings->nom_clinique }}</strong><br>
                         @if($clinicSettings->adresse) {{ $clinicSettings->adresse }}@if($clinicSettings->ville), {{ $clinicSettings->ville }}@endif<br>@endif
                         @if($clinicSettings->telephone) Tél: {{ $clinicSettings->telephone }}<br>@endif

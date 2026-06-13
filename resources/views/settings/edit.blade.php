@@ -95,7 +95,7 @@
 
                 <div class="flex gap-3 pt-4 border-t border-gray-100">
                     <button type="submit"
-                            class="px-6 py-2.5 bg-blue-600 hover:bg-cyan-400 text-gray-900 font-semibold text-sm rounded-xl transition-colors shadow-lg shadow-blue-500/10">
+                            class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-blue-500/20">
                         Enregistrer les modifications
                     </button>
                 </div>

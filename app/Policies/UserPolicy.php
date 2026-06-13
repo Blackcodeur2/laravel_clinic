@@ -11,11 +11,11 @@ class UserPolicy
      */
     public function before(User $user, string $ability): ?bool
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
 
-        return false; // Non-admins cannot manage users
+        return false; // Non-admins/non-responsables cannot manage users
     }
 
     public function viewAny(User $user): bool

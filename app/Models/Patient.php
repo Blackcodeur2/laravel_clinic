@@ -19,4 +19,14 @@ class Patient extends Model
     {
         return $this->hasMany(Consultation::class);
     }
+
+    /**
+     * Check if the patient has any unpaid or partially paid invoices.
+     */
+    public function hasUnpaidFacture(): bool
+    {
+        return $this->consultations->contains(function ($consultation) {
+            return $consultation->facture && in_array($consultation->facture->statut, ['IMPAYEE', 'PARTIELLEMENT_PAYEE']);
+        });
+    }
 }

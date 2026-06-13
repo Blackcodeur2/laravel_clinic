@@ -59,6 +59,32 @@ class PatientController extends Controller
             ->with('success', 'Patient mis à jour avec succès.');
     }
 
+    public function show(Patient $patient): View
+    {
+        Gate::authorize('view', $patient);
+
+        $consultations = $patient->consultations()
+            ->with(['medecin', 'facture.paiements'])
+            ->latest()
+            ->get();
+
+        $factures = \App\Models\Facture::whereHas('consultation', function ($query) use ($patient) {
+            $query->where('patient_id', $patient->id);
+        })
+        ->with(['ligneFactures.serviceMedical', 'ligneFactures.medicament', 'paiements'])
+        ->latest()
+        ->get();
+
+        $paiements = \App\Models\Paiement::whereHas('facture.consultation', function ($query) use ($patient) {
+            $query->where('patient_id', $patient->id);
+        })
+        ->with('facture')
+        ->latest()
+        ->get();
+
+        return view('patients.show', compact('patient', 'consultations', 'factures', 'paiements'));
+    }
+
     public function destroy(Patient $patient): RedirectResponse
     {
         Gate::authorize('delete', $patient);

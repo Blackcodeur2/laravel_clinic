@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Patients
-    Route::resource('patients', PatientController::class)->except(['show']);
+    Route::resource('patients', PatientController::class);
 
     // Consultations
     Route::resource('consultations', ConsultationController::class);
@@ -54,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
     // Paramètres de la clinique (admin only)
     Route::get('settings', [ClinicSettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [ClinicSettingController::class, 'update'])->name('settings.update');
+
+    // Rapports d'activité
+    Route::get('reports', [\App\Http\Controllers\ReportController::class, 'monthlyReport'])->name('reports.monthly');
 });
 
 require __DIR__.'/auth.php';

@@ -46,7 +46,7 @@ class FactureController extends Controller
             });
         }
 
-        $factures = $query->paginate(15)->withQueryString();
+        $factures = $query->get();
 
         return view('factures.index', compact('factures'));
     }

@@ -21,8 +21,7 @@ class ServiceMedicalController extends Controller
                 ->orWhere('description', 'like', "%{$search}%");
         })
             ->latest()
-            ->paginate(20)
-            ->withQueryString();
+            ->get();
 
         return view('services.index', compact('services', 'search'));
     }

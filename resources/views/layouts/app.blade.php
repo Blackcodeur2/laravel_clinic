@@ -71,13 +71,17 @@
                 Médicaments
             </x-nav-link>
 
-            @if(auth()->user()->isAdmin())
+            @if(auth()->user()->isAdmin() || auth()->user()->isResponsable())
                 <div class="pt-3 pb-1 px-3">
                     <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest">Administration</p>
                 </div>
                 <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')"
                             icon="users">
                     Utilisateurs
+                </x-nav-link>
+                <x-nav-link href="{{ route('reports.monthly') }}" :active="request()->routeIs('reports.*')"
+                            icon="chart-bar">
+                    Rapports d'activité
                 </x-nav-link>
                 <x-nav-link href="{{ route('settings.edit') }}" :active="request()->routeIs('settings.*')"
                             icon="cog-6-tooth">
@@ -93,7 +97,7 @@
                     @if(auth()->user()->photo_profile)
                         <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all" />
                     @else
-                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-gray-900 text-sm font-bold flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 group-hover:ring-2 group-hover:ring-violet-400 transition-all">
                             {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
                         </div>
                     @endif

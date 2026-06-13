@@ -30,8 +30,7 @@ class MedicamentController extends Controller
                 $q->where('stock', '=', 0);
             })
             ->latest()
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('medicaments.index', compact('medicaments', 'search'));
     }

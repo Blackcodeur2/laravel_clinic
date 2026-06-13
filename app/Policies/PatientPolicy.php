@@ -13,7 +13,7 @@ class PatientPolicy
      */
     public function before(User $user, string $ability): ?bool
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
         return null;

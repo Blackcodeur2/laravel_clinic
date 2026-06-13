@@ -9,7 +9,7 @@ class PatientRepository implements PatientRepositoryInterface
 {
     public function all(array $filters = []): Collection
     {
-        $query = Patient::latest();
+        $query = Patient::with('consultations.facture')->latest();
 
         if (! empty($filters['search'])) {
             $term = $filters['search'];
@@ -59,7 +59,8 @@ class PatientRepository implements PatientRepositoryInterface
 
     public function search(string $term): Collection
     {
-        return Patient::where('nom', 'like', "%{$term}%")
+        return Patient::with('consultations.facture')
+            ->where('nom', 'like', "%{$term}%")
             ->orWhere('prenom', 'like', "%{$term}%")
             ->orWhere('telephone', 'like', "%{$term}%")
             ->latest()

@@ -33,7 +33,7 @@ class UserController extends Controller
             $query->where('role_id', $request->input('role_id'));
         }
 
-        $users = $query->latest()->paginate(15)->withQueryString();
+        $users = $query->latest()->get();
         $roles = Role::orderBy('nom')->get();
 
         return view('users.index', compact('users', 'roles'));

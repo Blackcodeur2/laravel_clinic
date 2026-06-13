@@ -76,6 +76,9 @@ class FactureService
 
             if ($medicamentId) {
                 $medicament = Medicament::lockForUpdate()->findOrFail($medicamentId);
+                if ($medicament->isExpired()) {
+                    throw new Exception("Le médicament « {$medicament->nom} » est périmé depuis le {$medicament->date_peremption->format('d/m/Y')} et ne peut pas être dispensé.");
+                }
                 if ($medicament->stock < $quantite) {
                     throw new Exception("Stock insuffisant pour le médicament: {$medicament->nom} (Stock actuel: {$medicament->stock})");
                 }

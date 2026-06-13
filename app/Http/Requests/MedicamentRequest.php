@@ -20,10 +20,12 @@ class MedicamentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'string', 'max:255'],
-            'prix' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string'],
+            'nom'             => ['required', 'string', 'max:255'],
+            'prix'            => ['required', 'numeric', 'min:0'],
+            'stock'           => ['required', 'integer', 'min:0'],
+            'description'     => ['nullable', 'string'],
+            'date_peremption' => ['nullable', 'date', 'after_or_equal:today'],
+            'stock_alerte'    => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

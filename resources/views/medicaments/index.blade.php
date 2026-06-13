@@ -15,6 +15,10 @@
                 description: '{{ addslashes($med->description ?? '') }}',
                 prix: {{ $med->prix }},
                 stock: {{ $med->stock }},
+                stock_alerte: {{ $med->stock_alerte }},
+                date_peremption: '{{ $med->date_peremption?->format('d/m/Y') ?? '' }}',
+                is_expired: {{ $med->isExpired() ? 'true' : 'false' }},
+                is_near_expiration: {{ $med->isNearExpiration() ? 'true' : 'false' }},
                 edit_url: '{{ route('medicaments.edit', $med) }}',
                 destroy_url: '{{ route('medicaments.destroy', $med) }}',
                 can_update: {{ auth()->user()->can('update', $med) ? 'true' : 'false' }},
@@ -89,6 +93,7 @@
                             <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Médicament</th>
                             <th class="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Prix unit. (FCFA)</th>
                             <th class="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Stock</th>
+                            <th class="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Date péremption</th>
                             <th class="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Actions</th>
                         </tr>
                     </thead>
@@ -105,15 +110,36 @@
                                 <td class="px-6 py-4 text-center">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border"
                                           :class="{
-                                              'bg-red-500/10 text-red-500 border-red-500/20': med.stock <= 10,
-                                              'bg-amber-500/10 text-yellow-600 border-amber-500/20': med.stock > 10 && med.stock <= 50,
-                                              'bg-emerald-500/10 text-green-600 border-emerald-500/20': med.stock > 50
+                                              'bg-red-500/10 text-red-600 border-red-500/20': med.stock === 0 || med.is_expired,
+                                              'bg-amber-500/10 text-yellow-700 border-amber-500/20': med.stock > 0 && !med.is_expired && med.stock <= med.stock_alerte,
+                                              'bg-emerald-500/10 text-green-600 border-emerald-500/20': med.stock > med.stock_alerte && !med.is_expired
                                           }">
                                         <span x-text="med.stock"></span>
-                                        <template x-if="med.stock <= 10">
-                                            <span class="ml-1">⚠</span>
+                                        <template x-if="med.stock === 0">
+                                            <span class="ml-1" title="Rupture de stock">🔴</span>
+                                        </template>
+                                        <template x-if="med.stock > 0 && !med.is_expired && med.stock <= med.stock_alerte">
+                                            <span class="ml-1" title="Stock critique">⚠️</span>
                                         </template>
                                     </span>
+                                    <p class="text-gray-400 text-xs mt-0.5" x-text="'Seuil: ' + med.stock_alerte"></p>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <template x-if="med.date_peremption">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border"
+                                              :class="{
+                                                  'bg-red-500/10 text-red-600 border-red-500/20': med.is_expired,
+                                                  'bg-amber-500/10 text-yellow-700 border-amber-500/20': med.is_near_expiration && !med.is_expired,
+                                                  'bg-emerald-500/10 text-green-600 border-emerald-500/20': !med.is_expired && !med.is_near_expiration
+                                              }">
+                                            <span x-text="med.date_peremption"></span>
+                                            <template x-if="med.is_expired"><span class="ml-1">⛔</span></template>
+                                            <template x-if="med.is_near_expiration && !med.is_expired"><span class="ml-1">⚠️</span></template>
+                                        </span>
+                                    </template>
+                                    <template x-if="!med.date_peremption">
+                                        <span class="text-gray-400 text-xs">—</span>
+                                    </template>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
@@ -139,7 +165,7 @@
                             </tr>
                         </template>
                         <tr x-show="filteredMedicaments.length === 0">
-                            <td colspan="4" class="text-center py-12 text-gray-400">Aucun médicament</td>
+                            <td colspan="5" class="text-center py-12 text-gray-400">Aucun médicament</td>
                         </tr>
                     </tbody>
                 </table>

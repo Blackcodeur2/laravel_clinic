@@ -2,6 +2,135 @@
     <x-slot name="header">Tableau de bord</x-slot>
     <x-slot name="title">Tableau de bord</x-slot>
 
+    @php
+        $totalAlerts = $alertExpired->count() + $alertNearExpiration->count() + $alertLowStock->count() + $alertOutOfStock->count();
+        $isCritical = $alertExpired->count() > 0 || $alertOutOfStock->count() > 0;
+        $panelBorderClass   = $isCritical ? 'border-red-300 bg-red-50'      : 'border-amber-300 bg-amber-50';
+        $panelHeaderClass   = $isCritical ? 'bg-red-100/70 hover:bg-red-100' : 'bg-amber-100/70 hover:bg-amber-100';
+        $panelTitleColor    = $isCritical ? 'text-red-800'   : 'text-amber-800';
+        $panelBadgeBg       = $isCritical ? 'bg-red-500'     : 'bg-amber-500';
+        $panelSubtextColor  = $isCritical ? 'text-red-600'   : 'text-amber-600';
+        $panelIcon          = $isCritical ? '🚨' : '⚠️';
+        $panelChevronColor  = $isCritical ? 'text-red-600'   : 'text-amber-600';
+    @endphp
+
+    {{-- ===== Medication Alerts Panel ===== --}}
+    @if($totalAlerts > 0)
+    <div x-data="{ open: true }" class="mb-6">
+        <div class="rounded-2xl border overflow-hidden shadow-sm {{ $panelBorderClass }}">
+
+            {{-- Header / Toggle --}}
+            <button @click="open = !open" type="button"
+                    class="w-full flex items-center justify-between px-5 py-4 text-left focus:outline-none transition-colors {{ $panelHeaderClass }}">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">{{ $panelIcon }}</span>
+                    <div>
+                        <p class="font-bold text-sm {{ $panelTitleColor }}">
+                            Alertes médicaments
+                            <span class="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold text-white {{ $panelBadgeBg }}">{{ $totalAlerts }}</span>
+                        </p>
+                        <p class="text-xs {{ $panelSubtextColor }}" x-text="open ? 'Cliquez pour masquer les détails' : 'Cliquez pour afficher les détails'"></p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 transition-transform {{ $panelChevronColor }}"
+                     :class="open ? 'rotate-180' : ''"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+
+            {{-- Body --}}
+            <div x-show="open" x-transition class="px-5 pb-5 pt-2 space-y-4">
+
+                {{-- Expired --}}
+                @if($alertExpired->count() > 0)
+                <div>
+                    <p class="text-xs font-bold text-red-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <span>🔴</span> Médicaments périmés ({{ $alertExpired->count() }}) — dispensation bloquée
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($alertExpired as $med)
+                            <a href="{{ route('medicaments.edit', $med) }}"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-colors shadow-sm">
+                                <i class="bi bi-capsule"></i>
+                                {{ $med->nom }}
+                                <span class="opacity-80">({{ $med->date_peremption->format('d/m/Y') }})</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- Out of Stock --}}
+                @if($alertOutOfStock->count() > 0)
+                <div>
+                    <p class="text-xs font-bold text-red-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <span>🔴</span> Rupture de stock ({{ $alertOutOfStock->count() }})
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($alertOutOfStock as $med)
+                            <a href="{{ route('medicaments.edit', $med) }}"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-400 text-white text-xs font-semibold hover:bg-red-500 transition-colors shadow-sm">
+                                <i class="bi bi-box-seam"></i>
+                                {{ $med->nom }}
+                                <span class="opacity-80">(stock: 0)</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- Near Expiration --}}
+                @if($alertNearExpiration->count() > 0)
+                <div>
+                    <p class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <span>🟠</span> Proche de la péremption — moins de 30 jours ({{ $alertNearExpiration->count() }})
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($alertNearExpiration as $med)
+                            <a href="{{ route('medicaments.edit', $med) }}"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 transition-colors shadow-sm">
+                                <i class="bi bi-calendar-x"></i>
+                                {{ $med->nom }}
+                                <span class="opacity-80">({{ $med->date_peremption->format('d/m/Y') }})</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- Low Stock --}}
+                @if($alertLowStock->count() > 0)
+                <div>
+                    <p class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <span>🟡</span> Stock critique (≤ seuil d'alerte) ({{ $alertLowStock->count() }})
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($alertLowStock as $med)
+                            <a href="{{ route('medicaments.edit', $med) }}"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-400 text-yellow-900 text-xs font-semibold hover:bg-yellow-500 transition-colors shadow-sm">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                {{ $med->nom }}
+                                <span class="opacity-70">(stock: {{ $med->stock }} / seuil: {{ $med->stock_alerte }})</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <div class="pt-1 border-t border-gray-200/50">
+                    <a href="{{ route('medicaments.index') }}"
+                       class="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
+                        <i class="bi bi-arrow-right-circle"></i>
+                        Gérer le catalogue des médicaments
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- KPI Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
@@ -69,6 +198,7 @@
             <div class="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-emerald-500/5"></div>
         </div>
     </div>
+
 
     {{-- Charts Section --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

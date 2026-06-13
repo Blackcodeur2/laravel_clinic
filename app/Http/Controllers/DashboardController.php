@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\Consultation;
 use App\Models\Facture;
+use App\Models\Medicament;
 use App\Models\Paiement;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -96,6 +97,26 @@ class DashboardController extends Controller
             $doctorCounts[] = (int)$act->count;
         }
 
+        // 4. Medication alerts
+        $today = now()->toDateString();
+        $alertExpired = Medicament::whereNotNull('date_peremption')
+            ->whereDate('date_peremption', '<', $today)
+            ->orderBy('date_peremption')
+            ->get();
+
+        $alertNearExpiration = Medicament::whereNotNull('date_peremption')
+            ->whereDate('date_peremption', '>=', $today)
+            ->whereDate('date_peremption', '<=', now()->addDays(30)->toDateString())
+            ->orderBy('date_peremption')
+            ->get();
+
+        $alertLowStock = Medicament::whereColumn('stock', '<=', 'stock_alerte')
+            ->where('stock', '>', 0)
+            ->orderBy('stock')
+            ->get();
+
+        $alertOutOfStock = Medicament::where('stock', 0)->orderBy('nom')->get();
+
         return view('dashboard', compact(
             'totalPatients',
             'consultationsToday',
@@ -110,7 +131,11 @@ class DashboardController extends Controller
             'paymentLabels',
             'paymentTotals',
             'doctorLabels',
-            'doctorCounts'
+            'doctorCounts',
+            'alertExpired',
+            'alertNearExpiration',
+            'alertLowStock',
+            'alertOutOfStock'
         ));
     }
 }

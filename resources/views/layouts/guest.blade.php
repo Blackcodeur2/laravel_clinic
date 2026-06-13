@@ -14,7 +14,9 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased bg-gray-200">
+    <body class="font-sans text-gray-900 antialiased bg-gray-200"
+          @if(session('success')) data-flash-success="{{ session('success') }}" @endif
+          @if(session('error') || $errors->has('error')) data-flash-error="{{ session('error') ?? $errors->first('error') }}" @endif>
         <x-splash-screen />
         <div class="min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-clinic-50 via-white to-teal-50 relative overflow-hidden">
             {{-- Background decorative elements --}}

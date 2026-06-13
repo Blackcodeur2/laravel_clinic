@@ -9,7 +9,9 @@
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet"/>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full bg-gray-100 font-sans antialiased" x-data="{ sidebarOpen: false }">
+<body class="h-full bg-gray-100 font-sans antialiased" x-data="{ sidebarOpen: false }"
+      @if(session('success')) data-flash-success="{{ session('success') }}" @endif
+      @if(session('error') || $errors->has('error')) data-flash-error="{{ session('error') ?? $errors->first('error') }}" @endif>
     <x-splash-screen />
 
     {{-- ==================== SIDEBAR ==================== --}}
@@ -167,85 +169,8 @@
         {{-- Page content --}}
         <main class="flex-1 px-4 sm:px-6 lg:px-8 py-8">
 
-            {{-- Flash messages (handled by SweetAlert2 via JS) --}}
-            @if(session('success') || session('error') || $errors->has('error'))
-                <script type="module">
-                    document.addEventListener('DOMContentLoaded', () => {
-                        if (window.Swal) {
-                            const Toast = window.Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', window.Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', window.Swal.resumeTimer)
-                                }
-                            });
-
-                            @if(session('success'))
-                            Toast.fire({
-                                icon: 'success',
-                                title: "{{ session('success') }}"
-                            });
-                            @endif
-
-                            @if(session('error') || $errors->has('error'))
-                            Toast.fire({
-                                icon: 'error',
-                                title: "{{ session('error') ?? $errors->first('error') }}"
-                            });
-                            @endif
-                        }
-                    });
-                </script>
-            @endif
-
             {{ $slot }}
         </main>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.addEventListener('submit', function (e) {
-                const form = e.target;
-                if (form.hasAttribute('data-confirm')) {
-                    if (form.dataset.confirmed) {
-                        return;
-                    }
-
-                    e.preventDefault();
-
-                    const message = form.getAttribute('data-confirm');
-                    
-                    window.Swal.fire({
-                        title: 'Confirmation',
-                        text: message,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#4b5563',
-                        confirmButtonText: 'Oui, supprimer',
-                        cancelButtonText: 'Annuler',
-                        reverseButtons: true,
-                        customClass: {
-                            popup: 'rounded-3xl border border-gray-200/50 shadow-2xl p-6 font-sans',
-                            title: 'text-lg font-bold text-gray-900',
-                            htmlContainer: 'text-sm text-gray-500 mt-2',
-                            confirmButton: 'inline-flex justify-center px-5 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ml-3',
-                            cancelButton: 'inline-flex justify-center px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2'
-                        },
-                        buttonsStyling: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.dataset.confirmed = 'true';
-                            form.submit();
-                        }
-                    });
-                }
-            });
-        });
-    </script>
 </body>
 </html>

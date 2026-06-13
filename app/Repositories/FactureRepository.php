@@ -28,6 +28,7 @@ class FactureRepository implements FactureRepositoryInterface
         if ($facture) {
             return $facture->update($data);
         }
+
         return false;
     }
 
@@ -37,6 +38,7 @@ class FactureRepository implements FactureRepositoryInterface
         if ($facture) {
             return $facture->delete();
         }
+
         return false;
     }
 

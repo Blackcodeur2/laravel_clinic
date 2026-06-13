@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Patient;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PatientPolicy
 {
@@ -16,6 +15,7 @@ class PatientPolicy
         if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
+
         return null;
     }
 
@@ -56,6 +56,6 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        return false; // Only admin (handled in before()) can delete
+        return false; // Patient deletion is not allowed
     }
 }

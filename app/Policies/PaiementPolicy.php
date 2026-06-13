@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Paiement;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PaiementPolicy
 {
@@ -16,6 +15,7 @@ class PaiementPolicy
         if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
+
         return null;
     }
 

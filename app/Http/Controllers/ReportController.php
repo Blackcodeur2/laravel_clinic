@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Consultation;
 use App\Models\Facture;
-use App\Models\Paiement;
 use App\Models\LigneFacture;
-use App\Models\User;
+use App\Models\Paiement;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -53,9 +52,9 @@ class ReportController extends Controller
             ->get();
 
         $topServices = LigneFacture::whereHas('facture', function ($q) use ($month, $year) {
-                $q->whereMonth('date_facture', $month)
-                  ->whereYear('date_facture', $year);
-            })
+            $q->whereMonth('date_facture', $month)
+                ->whereYear('date_facture', $year);
+        })
             ->whereNotNull('service_medical_id')
             ->with('serviceMedical')
             ->selectRaw('service_medical_id, sum(quantite) as count, sum(total) as revenue')
@@ -65,9 +64,9 @@ class ReportController extends Controller
             ->get();
 
         $topMedicaments = LigneFacture::whereHas('facture', function ($q) use ($month, $year) {
-                $q->whereMonth('date_facture', $month)
-                  ->whereYear('date_facture', $year);
-            })
+            $q->whereMonth('date_facture', $month)
+                ->whereYear('date_facture', $year);
+        })
             ->whereNotNull('medicament_id')
             ->with('medicament')
             ->selectRaw('medicament_id, sum(quantite) as count, sum(total) as revenue')
@@ -95,12 +94,12 @@ class ReportController extends Controller
      */
     public function monthlyReport(Request $request): View
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isResponsable()) {
+        if (! auth()->user()->isAdmin() && ! auth()->user()->isResponsable()) {
             abort(403, 'Accès non autorisé.');
         }
 
         $month = $request->input('month', now()->format('m'));
-        $year  = $request->input('year', now()->format('Y'));
+        $year = $request->input('year', now()->format('Y'));
 
         return view('reports.show', $this->buildReportData($month, $year));
     }
@@ -110,12 +109,12 @@ class ReportController extends Controller
      */
     public function pdf(Request $request): Response
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isResponsable()) {
+        if (! auth()->user()->isAdmin() && ! auth()->user()->isResponsable()) {
             abort(403, 'Accès non autorisé.');
         }
 
         $month = $request->input('month', now()->format('m'));
-        $year  = $request->input('year', now()->format('Y'));
+        $year = $request->input('year', now()->format('Y'));
 
         return $this->pdfService->generateReport($this->buildReportData($month, $year), $month, $year);
     }

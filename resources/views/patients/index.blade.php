@@ -20,9 +20,7 @@
                 has_unpaid: {{ $patient->hasUnpaidFacture() ? 'true' : 'false' }},
                 edit_url: '{{ route('patients.edit', $patient) }}',
                 show_url: '{{ route('patients.show', $patient) }}',
-                destroy_url: '{{ route('patients.destroy', $patient) }}',
-                can_update: {{ auth()->user()->can('update', $patient) ? 'true' : 'false' }},
-                can_delete: {{ auth()->user()->can('delete', $patient) ? 'true' : 'false' }}
+                can_update: {{ auth()->user()->can('update', $patient) ? 'true' : 'false' }}
             },
             @endforeach
         ],
@@ -127,17 +125,6 @@
                                                class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center"> 
                                                 <i class='bi bi-pencil-square text-lg'></i>
                                             </a>
-                                        </template>
-                                        <template x-if="patient.can_delete">
-                                            <form method="POST" :action="patient.destroy_url"
-                                                  data-confirm="Voulez-vous vraiment supprimer ce patient ? Cette action est irréversible et supprimera tout son historique.">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit"
-                                                        class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center"> 
-                                                    <i class='bi bi-trash text-lg'></i>
-                                                </button>
-                                            </form>
                                         </template>
                                     </div>
                                 </td>

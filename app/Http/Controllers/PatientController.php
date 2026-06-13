@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PatientRequest;
+use App\Models\Facture;
+use App\Models\Paiement;
 use App\Models\Patient;
 use App\Repositories\PatientRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
@@ -68,29 +70,20 @@ class PatientController extends Controller
             ->latest()
             ->get();
 
-        $factures = \App\Models\Facture::whereHas('consultation', function ($query) use ($patient) {
+        $factures = Facture::whereHas('consultation', function ($query) use ($patient) {
             $query->where('patient_id', $patient->id);
         })
-        ->with(['ligneFactures.serviceMedical', 'ligneFactures.medicament', 'paiements'])
-        ->latest()
-        ->get();
+            ->with(['ligneFactures.serviceMedical', 'ligneFactures.medicament', 'paiements'])
+            ->latest()
+            ->get();
 
-        $paiements = \App\Models\Paiement::whereHas('facture.consultation', function ($query) use ($patient) {
+        $paiements = Paiement::whereHas('facture.consultation', function ($query) use ($patient) {
             $query->where('patient_id', $patient->id);
         })
-        ->with('facture')
-        ->latest()
-        ->get();
+            ->with('facture')
+            ->latest()
+            ->get();
 
         return view('patients.show', compact('patient', 'consultations', 'factures', 'paiements'));
-    }
-
-    public function destroy(Patient $patient): RedirectResponse
-    {
-        Gate::authorize('delete', $patient);
-        $this->patientRepository->delete($patient->id);
-
-        return redirect()->route('patients.index')
-            ->with('success', 'Patient supprimé avec succès.');
     }
 }

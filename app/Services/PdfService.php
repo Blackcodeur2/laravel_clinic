@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Facture;
 use App\Models\Paiement;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -54,7 +55,7 @@ class PdfService
             ->setOption('isRemoteEnabled', true)
             ->setOption('isHtml5ParserEnabled', true);
 
-        $monthName = \Carbon\Carbon::create(null, (int) $month, 1)->format('Y-m');
+        $monthName = Carbon::create(null, (int) $month, 1)->format('Y-m');
 
         return $pdf->download("rapport-activite-{$monthName}.pdf");
     }

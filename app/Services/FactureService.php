@@ -5,11 +5,10 @@ namespace App\Services;
 use App\Models\Consultation;
 use App\Models\Facture;
 use App\Models\LigneFacture;
-use App\Models\Paiement;
 use App\Models\Medicament;
-use App\Models\ServiceMedical;
-use Illuminate\Support\Facades\DB;
+use App\Models\Paiement;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class FactureService
 {
@@ -133,7 +132,7 @@ class FactureService
             $montant = (float) $paiementData['montant'];
 
             if ($montant <= 0) {
-                throw new Exception("Le montant du paiement doit être supérieur à zéro.");
+                throw new Exception('Le montant du paiement doit être supérieur à zéro.');
             }
 
             $paiement = Paiement::create([

@@ -53,4 +53,3 @@ test('deactivated users can not authenticate', function () {
     $this->assertGuest();
     $response->assertSessionHasErrors('login');
 });
-

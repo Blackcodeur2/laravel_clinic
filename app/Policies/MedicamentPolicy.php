@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Medicament;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class MedicamentPolicy
 {
@@ -16,6 +15,7 @@ class MedicamentPolicy
         if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
+
         return null;
     }
 

@@ -105,7 +105,7 @@
                 {{-- Add line form --}}
                 @can('update', $facture)
                     @if($facture->statut !== 'PAYEE')
-                        <div class="border-t border-gray-200 p-6" x-data="{ type: 'service' }">
+                        <div class="border-t border-gray-200 p-6" x-data="{ type: 'service', serviceId: '', medicamentId: '', prixUnitaire: '', updatePrix() { if (this.type === 'service') { const select = document.querySelector('select[name=service_medical_id]'); if (select) { const option = select.options[select.selectedIndex]; this.prixUnitaire = option?.dataset?.prix || ''; } } else { const select = document.querySelector('select[name=medicament_id]'); if (select) { const option = select.options[select.selectedIndex]; this.prixUnitaire = option?.dataset?.prix || ''; } } } }" x-init="$watch('type', () => { serviceId = ''; medicamentId = ''; prixUnitaire = ''; }); $watch('serviceId', () => updatePrix()); $watch('medicamentId', () => updatePrix());">
                             <h4 class="text-gray-700 text-sm font-medium mb-4">Ajouter une ligne</h4>
                             <form method="POST" action="{{ route('factures.lignes.store', $facture) }}" class="space-y-4">
                                 @csrf
@@ -126,7 +126,7 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div x-show="type === 'service'">
                                         <label class="block text-gray-500 text-xs mb-1">Service</label>
-                                        <select name="service_medical_id"
+                                        <select name="service_medical_id" x-model="serviceId"
                                                 class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:border-cyan-500">
                                             <option value="">-- Choisir --</option>
                                             @foreach($services as $service)
@@ -138,7 +138,7 @@
                                     </div>
                                     <div x-show="type === 'medicament'">
                                         <label class="block text-gray-500 text-xs mb-1">Médicament</label>
-                                        <select name="medicament_id"
+                                        <select name="medicament_id" x-model="medicamentId"
                                                 class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:border-cyan-500">
                                             <option value="">-- Choisir --</option>
                                             @foreach($medicaments as $med)
@@ -155,7 +155,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-gray-500 text-xs mb-1">Prix unitaire (F)</label>
-                                        <input type="number" name="prix_unitaire" step="0.01" min="0"
+                                        <input type="number" name="prix_unitaire" x-model="prixUnitaire" step="0.01" min="0"
                                                class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:border-cyan-500"/>
                                     </div>
                                 </div>

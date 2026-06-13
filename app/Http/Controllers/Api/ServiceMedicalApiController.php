@@ -15,6 +15,7 @@ class ServiceMedicalApiController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', ServiceMedical::class);
+
         return ServiceMedicalResource::collection(ServiceMedical::latest()->get());
     }
 
@@ -22,6 +23,7 @@ class ServiceMedicalApiController extends Controller
     {
         Gate::authorize('create', ServiceMedical::class);
         $service = ServiceMedical::create($request->validated());
+
         return (new ServiceMedicalResource($service))
             ->response()
             ->setStatusCode(201);
@@ -31,6 +33,7 @@ class ServiceMedicalApiController extends Controller
     {
         $service = ServiceMedical::findOrFail($id);
         Gate::authorize('view', $service);
+
         return new ServiceMedicalResource($service);
     }
 
@@ -39,6 +42,7 @@ class ServiceMedicalApiController extends Controller
         $service = ServiceMedical::findOrFail($id);
         Gate::authorize('update', $service);
         $service->update($request->validated());
+
         return new ServiceMedicalResource($service->fresh());
     }
 
@@ -47,6 +51,7 @@ class ServiceMedicalApiController extends Controller
         $service = ServiceMedical::findOrFail($id);
         Gate::authorize('delete', $service);
         $service->delete();
+
         return response()->json(['message' => 'Service médical supprimé avec succès.']);
     }
 }

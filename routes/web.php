@@ -8,6 +8,7 @@ use App\Http\Controllers\MedicamentController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceMedicalController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
@@ -26,7 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Patients
-    Route::resource('patients', PatientController::class);
+    Route::resource('patients', PatientController::class)->except(['destroy']);
 
     // Consultations
     Route::resource('consultations', ConsultationController::class);
@@ -56,8 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('settings', [ClinicSettingController::class, 'update'])->name('settings.update');
 
     // Rapports d'activité
-    Route::get('reports', [\App\Http\Controllers\ReportController::class, 'monthlyReport'])->name('reports.monthly');
-    Route::get('reports/pdf', [\App\Http\Controllers\ReportController::class, 'pdf'])->name('reports.pdf');
+    Route::get('reports', [ReportController::class, 'monthlyReport'])->name('reports.monthly');
+    Route::get('reports/pdf', [ReportController::class, 'pdf'])->name('reports.pdf');
 });
 
 require __DIR__.'/auth.php';

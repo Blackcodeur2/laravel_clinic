@@ -20,6 +20,7 @@ class PatientApiController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Patient::class);
+
         return PatientResource::collection($this->patientRepository->all());
     }
 
@@ -27,6 +28,7 @@ class PatientApiController extends Controller
     {
         Gate::authorize('create', Patient::class);
         $patient = $this->patientRepository->create($request->validated());
+
         return (new PatientResource($patient))
             ->response()
             ->setStatusCode(201);
@@ -35,32 +37,23 @@ class PatientApiController extends Controller
     public function show(int $id): PatientResource
     {
         $patient = $this->patientRepository->find($id);
-        if (!$patient) {
-            abort(404, "Patient non trouvé.");
+        if (! $patient) {
+            abort(404, 'Patient non trouvé.');
         }
         Gate::authorize('view', $patient);
+
         return new PatientResource($patient);
     }
 
     public function update(PatientRequest $request, int $id): PatientResource
     {
         $patient = $this->patientRepository->find($id);
-        if (!$patient) {
-            abort(404, "Patient non trouvé.");
+        if (! $patient) {
+            abort(404, 'Patient non trouvé.');
         }
         Gate::authorize('update', $patient);
         $this->patientRepository->update($id, $request->validated());
-        return new PatientResource($patient->fresh());
-    }
 
-    public function destroy(int $id): JsonResponse
-    {
-        $patient = $this->patientRepository->find($id);
-        if (!$patient) {
-            abort(404, "Patient non trouvé.");
-        }
-        Gate::authorize('delete', $patient);
-        $this->patientRepository->delete($id);
-        return response()->json(['message' => 'Patient supprimé avec succès.']);
+        return new PatientResource($patient->fresh());
     }
 }

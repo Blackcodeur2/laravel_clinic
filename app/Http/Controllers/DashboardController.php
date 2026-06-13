@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
 use App\Models\Consultation;
 use App\Models\Facture;
 use App\Models\Medicament;
 use App\Models\Paiement;
-use Illuminate\Http\Request;
+use App\Models\Patient;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -23,11 +22,11 @@ class DashboardController extends Controller
         }
 
         $totalPatients = Patient::count();
-        
+
         $consultationsToday = Consultation::whereDate('date_consultation', now()->toDateString())->count();
-        
+
         $unpaidInvoicesCount = Facture::whereIn('statut', ['IMPAYEE', 'PARTIELLEMENT_PAYEE'])->count();
-        
+
         $monthlyRevenue = Paiement::whereMonth('date_paiement', now()->month)
             ->whereYear('date_paiement', now()->year)
             ->sum('montant');
@@ -60,10 +59,10 @@ class DashboardController extends Controller
             $revenueMonths[] = $monthLabel;
 
             $matchedRev = $monthlyRevenueData->firstWhere('month', $monthKey);
-            $revenueTotals[] = $matchedRev ? (float)$matchedRev->total : 0.0;
+            $revenueTotals[] = $matchedRev ? (float) $matchedRev->total : 0.0;
 
             $matchedUnpaid = $monthlyUnpaidData->firstWhere('month', $monthKey);
-            $unpaidTotals[] = $matchedUnpaid ? (float)$matchedUnpaid->total : 0.0;
+            $unpaidTotals[] = $matchedUnpaid ? (float) $matchedUnpaid->total : 0.0;
         }
 
         // 2. Payments breakdown by method
@@ -76,7 +75,7 @@ class DashboardController extends Controller
         $paymentTotals = [];
         foreach ($paymentsByMethod as $payment) {
             $paymentLabels[] = ucfirst(strtolower(str_replace('_', ' ', $payment->mode_paiement)));
-            $paymentTotals[] = (float)$payment->total;
+            $paymentTotals[] = (float) $payment->total;
         }
 
         // 3. Consultations per doctor (current month)
@@ -92,9 +91,9 @@ class DashboardController extends Controller
         $doctorLabels = [];
         $doctorCounts = [];
         foreach ($doctorsActivity as $act) {
-            $name = $act->medecin ? "Dr. " . $act->medecin->prenom . " " . $act->medecin->nom : 'Non assigné';
+            $name = $act->medecin ? 'Dr. '.$act->medecin->prenom.' '.$act->medecin->nom : 'Non assigné';
             $doctorLabels[] = $name;
-            $doctorCounts[] = (int)$act->count;
+            $doctorCounts[] = (int) $act->count;
         }
 
         // 4. Medication alerts

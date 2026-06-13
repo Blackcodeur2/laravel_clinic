@@ -15,6 +15,7 @@ class MedicamentApiController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Medicament::class);
+
         return MedicamentResource::collection(Medicament::latest()->get());
     }
 
@@ -22,6 +23,7 @@ class MedicamentApiController extends Controller
     {
         Gate::authorize('create', Medicament::class);
         $medicament = Medicament::create($request->validated());
+
         return (new MedicamentResource($medicament))
             ->response()
             ->setStatusCode(201);
@@ -31,6 +33,7 @@ class MedicamentApiController extends Controller
     {
         $medicament = Medicament::findOrFail($id);
         Gate::authorize('view', $medicament);
+
         return new MedicamentResource($medicament);
     }
 
@@ -39,6 +42,7 @@ class MedicamentApiController extends Controller
         $medicament = Medicament::findOrFail($id);
         Gate::authorize('update', $medicament);
         $medicament->update($request->validated());
+
         return new MedicamentResource($medicament->fresh());
     }
 
@@ -47,6 +51,7 @@ class MedicamentApiController extends Controller
         $medicament = Medicament::findOrFail($id);
         Gate::authorize('delete', $medicament);
         $medicament->delete();
+
         return response()->json(['message' => 'Médicament supprimé avec succès.']);
     }
 }

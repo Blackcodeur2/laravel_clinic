@@ -3,41 +3,66 @@
     <x-slot name="title">Modifier médicament</x-slot>
 
     <div class="max-w-2xl">
-        <div class="rounded-2xl bg-gray-50 border border-gray-200 p-6">
-            <form method="POST" action="{{ route('medicaments.update', $medicament) }}" class="space-y-5">
+        <div class="rounded-2xl bg-gray-50 border border-gray-200 p-6" x-data="{
+            form: {
+                nom: '{{ old('nom', $medicament->nom) }}',
+                prix: '{{ old('prix', $medicament->prix) }}',
+                stock: '{{ old('stock', $medicament->stock) }}',
+                description: '{{ old('description', $medicament->description) }}',
+                date_peremption: '{{ old('date_peremption', $medicament->date_peremption?->format('Y-m-d')) }}',
+                stock_alerte: '{{ old('stock_alerte', $medicament->stock_alerte) }}'
+            },
+            errors: {},
+            validate() {
+                this.errors = {};
+                if (!this.form.nom || this.form.nom.trim() === '') this.errors.nom = 'Le nom est requis.';
+                else if (this.form.nom.length > 255) this.errors.nom = 'Le nom ne doit pas dépasser 255 caractères.';
+                if (!this.form.prix || this.form.prix === '') this.errors.prix = 'Le prix est requis.';
+                else if (parseFloat(this.form.prix) < 0) this.errors.prix = 'Le prix doit être supérieur ou égal à 0.';
+                if (this.form.stock === '' || this.form.stock === null) this.errors.stock = 'Le stock est requis.';
+                else if (parseInt(this.form.stock) < 0) this.errors.stock = 'Le stock doit être supérieur ou égal à 0.';
+                if (this.form.date_peremption && new Date(this.form.date_peremption) < new Date().setHours(0,0,0,0)) this.errors.date_peremption = 'La date de péremption doit être ultérieure ou égale à aujourd\'hui.';
+                if (this.form.stock_alerte && parseInt(this.form.stock_alerte) < 1) this.errors.stock_alerte = 'Le seuil d\'alerte doit être supérieur à 0.';
+                return Object.keys(this.errors).length === 0;
+            }
+        }" x-init="$watch('form', () => validate(), { deep: true })">
+            <form method="POST" action="{{ route('medicaments.update', $medicament) }}" class="space-y-5" @submit="if (!validate()) $event.preventDefault()">
                 @csrf @method('PATCH')
 
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-1.5">Nom <span class="text-red-400">*</span></label>
-                    <input type="text" name="nom" value="{{ old('nom', $medicament->nom) }}" required
-                           class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors"/>
+                    <input type="text" name="nom" x-model="form.nom" required
+                           :class="'w-full px-4 py-2.5 bg-white border rounded-xl text-gray-900 text-sm focus:outline-none transition-colors ' + (errors.nom ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-cyan-500')"/>
+                    <p x-show="errors.nom" x-text="errors.nom" class="mt-1 text-red-400 text-xs"></p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">
                     <div>
                         <label class="block text-gray-700 text-sm font-medium mb-1.5">Prix unitaire (FCFA) <span class="text-red-400">*</span></label>
-                        <input type="number" name="prix" value="{{ old('prix', $medicament->prix) }}" required step="0.01" min="0"
-                               class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors"/>
+                        <input type="number" name="prix" x-model="form.prix" required step="0.01" min="0"
+                               :class="'w-full px-4 py-2.5 bg-white border rounded-xl text-gray-900 text-sm focus:outline-none transition-colors ' + (errors.prix ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-cyan-500')"/>
+                        <p x-show="errors.prix" x-text="errors.prix" class="mt-1 text-red-400 text-xs"></p>
                     </div>
                     <div>
                         <label class="block text-gray-700 text-sm font-medium mb-1.5">Stock <span class="text-red-400">*</span></label>
-                        <input type="number" name="stock" value="{{ old('stock', $medicament->stock) }}" required min="0"
-                               class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors"/>
+                        <input type="number" name="stock" x-model="form.stock" required min="0"
+                               :class="'w-full px-4 py-2.5 bg-white border rounded-xl text-gray-900 text-sm focus:outline-none transition-colors ' + (errors.stock ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-cyan-500')"/>
+                        <p x-show="errors.stock" x-text="errors.stock" class="mt-1 text-red-400 text-xs"></p>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-1.5">Description</label>
-                    <textarea name="description" rows="3"
-                              class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors resize-none">{{ old('description', $medicament->description) }}</textarea>
+                    <textarea name="description" x-model="form.description" rows="3"
+                              class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors resize-none"></textarea>
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">
                     <div>
                         <label class="block text-gray-700 text-sm font-medium mb-1.5">Date de péremption</label>
-                        <input type="date" name="date_peremption"
-                               value="{{ old('date_peremption', $medicament->date_peremption?->format('Y-m-d')) }}"
-                               class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors @error('date_peremption') border-red-500 @enderror"/>
+                        <input type="date" name="date_peremption" x-model="form.date_peremption"
+                               :class="'w-full px-4 py-2.5 bg-white border rounded-xl text-gray-900 text-sm focus:outline-none transition-colors ' + (errors.date_peremption ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-cyan-500')"/>
+                        <p x-show="errors.date_peremption" x-text="errors.date_peremption" class="mt-1 text-red-400 text-xs"></p>
                         @error('date_peremption')<p class="mt-1 text-red-400 text-xs">{{ $message }}</p>@enderror
                         @if($medicament->isExpired())
                             <p class="mt-1 text-red-500 text-xs font-semibold">⛔ Ce médicament est périmé depuis le {{ $medicament->date_peremption->format('d/m/Y') }}</p>
@@ -49,9 +74,9 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 text-sm font-medium mb-1.5">Seuil d'alerte stock</label>
-                        <input type="number" name="stock_alerte"
-                               value="{{ old('stock_alerte', $medicament->stock_alerte) }}" min="1"
-                               class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-cyan-500 transition-colors @error('stock_alerte') border-red-500 @enderror"/>
+                        <input type="number" name="stock_alerte" x-model="form.stock_alerte" min="1"
+                               :class="'w-full px-4 py-2.5 bg-white border rounded-xl text-gray-900 text-sm focus:outline-none transition-colors ' + (errors.stock_alerte ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-cyan-500')"/>
+                        <p x-show="errors.stock_alerte" x-text="errors.stock_alerte" class="mt-1 text-red-400 text-xs"></p>
                         @error('stock_alerte')<p class="mt-1 text-red-400 text-xs">{{ $message }}</p>@enderror
                         <p class="mt-1 text-gray-400 text-xs">Stock actuel : <strong>{{ $medicament->stock }}</strong> — Alerte si ≤ seuil</p>
                     </div>

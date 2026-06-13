@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,7 +34,6 @@ class LoginRequest extends FormRequest
         ];
     }
 
-
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -49,8 +49,8 @@ class LoginRequest extends FormRequest
         $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         // Check if user exists and is inactive, throwing a specific message if credentials are correct
-        $user = \App\Models\User::where($fieldType, $login)->first();
-        if ($user && !$user->is_active) {
+        $user = User::where($fieldType, $login)->first();
+        if ($user && ! $user->is_active) {
             if (\Hash::check($this->input('password'), $user->password)) {
                 RateLimiter::hit($this->throttleKey());
                 throw ValidationException::withMessages([
@@ -106,5 +106,4 @@ class LoginRequest extends FormRequest
     {
         return Str::transliterate(Str::lower($this->string('login')).'|'.$this->ip());
     }
-
 }

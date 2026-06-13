@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Facture;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class FacturePolicy
 {
@@ -16,6 +15,7 @@ class FacturePolicy
         if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
+
         return null;
     }
 

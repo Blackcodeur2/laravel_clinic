@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Consultation;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ConsultationPolicy
 {
@@ -16,6 +15,7 @@ class ConsultationPolicy
         if ($user->isAdmin() || $user->isResponsable()) {
             return true;
         }
+
         return null;
     }
 

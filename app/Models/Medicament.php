@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 
 class Medicament extends Model
 {
@@ -22,9 +21,9 @@ class Medicament extends Model
 
     protected $casts = [
         'date_peremption' => 'date',
-        'stock_alerte'    => 'integer',
-        'stock'           => 'integer',
-        'prix'            => 'decimal:2',
+        'stock_alerte' => 'integer',
+        'stock' => 'integer',
+        'prix' => 'decimal:2',
     ];
 
     /**
@@ -43,6 +42,7 @@ class Medicament extends Model
         if ($this->date_peremption === null) {
             return false;
         }
+
         return ! $this->isExpired() && $this->date_peremption->diffInDays(now()) <= $days;
     }
 

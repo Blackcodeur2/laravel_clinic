@@ -80,7 +80,7 @@
         <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm align-middle">
-                    <thead class="bg-gray-50/50 border-b border-gray-150">
+                    <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
                             <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Patient</th>
                             <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4 hidden sm:table-cell">Téléphone</th>

@@ -161,7 +161,7 @@
                                 </div>
 
                                 <button type="submit"
-                                        class="px-5 py-2.5 bg-blue-600 hover:bg-cyan-400 text-gray-900 font-semibold text-sm rounded-xl transition-colors">
+                                        class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-blue-500/20">
                                     + Ajouter la ligne
                                 </button>
                             </form>
@@ -249,7 +249,7 @@
                                 </div>
 
                                 <button type="submit"
-                                        class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-gray-900 font-semibold text-sm rounded-xl transition-colors">
+                                        class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-emerald-500/20">
                                     Enregistrer le paiement
                                 </button>
                             </form>

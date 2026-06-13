@@ -43,12 +43,14 @@
             </button>
         </form>
 
-        <button onclick="window.print()" class="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl transition-colors shadow-lg shadow-emerald-500/10">
+        <a href="{{ route('reports.pdf', ['month' => $month, 'year' => $year]) }}"
+           target="_blank"
+           class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-emerald-500/20">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
-            Imprimer le rapport
-        </button>
+            Télécharger PDF
+        </a>
     </div>
 
     {{-- KPI Cards --}}
@@ -227,45 +229,4 @@
         </div>
     </div>
 
-    {{-- Print Layout Optimizations --}}
-    <style>
-        @media print {
-            body {
-                background-color: white !important;
-                color: black !important;
-            }
-            .fixed, header, nav, footer, .print\:hidden, [x-data] button {
-                display: none !important;
-            }
-            .lg\:pl-64 {
-                padding-left: 0 !important;
-            }
-            main {
-                padding: 0 !important;
-            }
-            .ring-1, .shadow-sm {
-                box-shadow: none !important;
-                border: 0 !important;
-                ring: 0 !important;
-            }
-            .rounded-2xl {
-                border-radius: 0 !important;
-            }
-            table {
-                border-collapse: collapse !important;
-                width: 100% !important;
-            }
-            th, td {
-                border-bottom: 1px solid #ddd !important;
-                padding: 8px !important;
-            }
-            .grid {
-                display: block !important;
-            }
-            .grid > div {
-                margin-bottom: 2rem !important;
-                page-break-inside: avoid !important;
-            }
-        }
-    </style>
 </x-app-layout>

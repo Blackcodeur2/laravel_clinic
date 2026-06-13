@@ -125,7 +125,7 @@
                                         </a>
                                         <template x-if="!user.is_current_user">
                                             <form method="POST" :action="user.destroy_url"
-                                                  onsubmit="return confirm('Supprimer cet utilisateur ?')">
+                                                  data-confirm="Voulez-vous vraiment supprimer cet utilisateur ?">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit"

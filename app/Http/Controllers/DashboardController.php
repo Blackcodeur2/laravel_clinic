@@ -7,6 +7,7 @@ use App\Models\Consultation;
 use App\Models\Facture;
 use App\Models\Paiement;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -14,8 +15,12 @@ class DashboardController extends Controller
     /**
      * Display the application dashboard.
      */
-    public function index(): View
+    public function index(): RedirectResponse|View
     {
+        if (auth()->user()->isCaissier()) {
+            return redirect()->route('factures.index');
+        }
+
         $totalPatients = Patient::count();
         
         $consultationsToday = Consultation::whereDate('date_consultation', now()->toDateString())->count();
@@ -30,6 +35,57 @@ class DashboardController extends Controller
         $latestInvoices = Facture::with('consultation.patient')->latest()->take(5)->get();
         $recentConsultations = Consultation::with('patient', 'medecin')->latest()->take(5)->get();
 
+        // 1. Revenue Evolution (last 6 months)
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth();
+        $monthlyRevenueData = Paiement::selectRaw("DATE_FORMAT(date_paiement, '%Y-%m') as month, SUM(montant) as total")
+            ->where('date_paiement', '>=', $sixMonthsAgo)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        $revenueMonths = [];
+        $revenueTotals = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $monthKey = $date->format('Y-m');
+            $monthLabel = ucfirst($date->translatedFormat('M Y'));
+            $revenueMonths[] = $monthLabel;
+
+            $matched = $monthlyRevenueData->firstWhere('month', $monthKey);
+            $revenueTotals[] = $matched ? (float)$matched->total : 0.0;
+        }
+
+        // 2. Payments breakdown by method
+        $paymentsByMethod = Paiement::selectRaw('mode_paiement, SUM(montant) as total')
+            ->groupBy('mode_paiement')
+            ->orderByDesc('total')
+            ->get();
+
+        $paymentLabels = [];
+        $paymentTotals = [];
+        foreach ($paymentsByMethod as $payment) {
+            $paymentLabels[] = ucfirst(strtolower(str_replace('_', ' ', $payment->mode_paiement)));
+            $paymentTotals[] = (float)$payment->total;
+        }
+
+        // 3. Consultations per doctor (current month)
+        $doctorsActivity = Consultation::selectRaw('medecin_id, COUNT(*) as count')
+            ->whereMonth('date_consultation', now()->month)
+            ->whereYear('date_consultation', now()->year)
+            ->with('medecin')
+            ->groupBy('medecin_id')
+            ->orderByDesc('count')
+            ->take(5)
+            ->get();
+
+        $doctorLabels = [];
+        $doctorCounts = [];
+        foreach ($doctorsActivity as $act) {
+            $name = $act->medecin ? "Dr. " . $act->medecin->prenom . " " . $act->medecin->nom : 'Non assigné';
+            $doctorLabels[] = $name;
+            $doctorCounts[] = (int)$act->count;
+        }
+
         return view('dashboard', compact(
             'totalPatients',
             'consultationsToday',
@@ -37,7 +93,13 @@ class DashboardController extends Controller
             'monthlyRevenue',
             'latestPatients',
             'latestInvoices',
-            'recentConsultations'
+            'recentConsultations',
+            'revenueMonths',
+            'revenueTotals',
+            'paymentLabels',
+            'paymentTotals',
+            'doctorLabels',
+            'doctorCounts'
         ));
     }
 }

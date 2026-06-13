@@ -70,6 +70,38 @@
         </div>
     </div>
 
+    {{-- Charts Section --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {{-- Evolution des recettes --}}
+        <div class="col-span-1 lg:col-span-2 rounded-2xl bg-white border border-gray-200 shadow-sm p-6">
+            <h3 class="text-gray-900 font-bold text-base mb-4 flex items-center gap-2">
+                <i class="bi bi-graph-up text-blue-500 text-lg"></i>
+                Évolution des encaissements (6 derniers mois)
+            </h3>
+            <div id="revenue-chart" style="min-height: 300px;"></div>
+        </div>
+
+        {{-- Modes de paiement --}}
+        <div class="col-span-1 rounded-2xl bg-white border border-gray-200 shadow-sm p-6 flex flex-col justify-between">
+            <h3 class="text-gray-900 font-bold text-base mb-4 flex items-center gap-2">
+                <i class="bi bi-wallet2 text-emerald-500 text-lg"></i>
+                Modes de paiement
+            </h3>
+            <div id="payment-chart" class="flex-1 flex items-center justify-center" style="min-height: 280px;"></div>
+        </div>
+    </div>
+
+    {{-- Doctor Activity Chart --}}
+    <div class="grid grid-cols-1 gap-6 mb-8">
+        <div class="rounded-2xl bg-white border border-gray-200 shadow-sm p-6">
+            <h3 class="text-gray-900 font-bold text-base mb-4 flex items-center gap-2">
+                <i class="bi bi-people text-violet-500 text-lg"></i>
+                Activité des médecins (Consultations ce mois-ci)
+            </h3>
+            <div id="doctor-chart" style="min-height: 250px;"></div>
+        </div>
+    </div>
+
     {{-- Tables --}}
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
@@ -129,4 +161,170 @@
             </div>
         </div>
     </div>
+
+    {{-- ApexCharts Script CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Theme colors
+            const colors = {
+                primary: '#2563eb', // Blue-600
+                success: '#059669', // Emerald-600
+                violet: '#8b5cf6'   // Violet-600
+            };
+
+            // 1. Revenue Evolution (Area Chart)
+            const revenueOptions = {
+                chart: {
+                    type: 'area',
+                    height: 300,
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                    fontFamily: 'Inter, sans-serif'
+                },
+                series: [{
+                    name: 'Montant encaissé',
+                    data: @json($revenueTotals)
+                }],
+                xaxis: {
+                    categories: @json($revenueMonths),
+                    labels: {
+                        style: { colors: '#6b7280', fontSize: '11px' }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (val) {
+                            return new Intl.NumberFormat('fr-FR').format(val) + ' F';
+                        },
+                        style: { colors: '#6b7280', fontSize: '11px' }
+                    }
+                },
+                colors: [colors.primary],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.4,
+                        opacityTo: 0.05,
+                        stops: [0, 100]
+                    }
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 3
+                },
+                dataLabels: { enabled: false },
+                grid: {
+                    borderColor: '#e5e7eb',
+                    strokeDashArray: 4
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return new Intl.NumberFormat('fr-FR').format(val) + ' FCFA';
+                        }
+                    }
+                }
+            };
+            new ApexCharts(document.querySelector("#revenue-chart"), revenueOptions).render();
+
+            // 2. Payments Breakdown (Donut Chart)
+            const paymentOptions = {
+                chart: {
+                    type: 'donut',
+                    height: 280,
+                    fontFamily: 'Inter, sans-serif'
+                },
+                series: @json($paymentTotals),
+                labels: @json($paymentLabels),
+                colors: ['#059669', '#2563eb', '#8b5cf6', '#eab308', '#ef4444'],
+                legend: {
+                    position: 'bottom',
+                    fontSize: '12px',
+                    labels: { colors: '#374151' }
+                },
+                dataLabels: { enabled: false },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return new Intl.NumberFormat('fr-FR').format(val) + ' FCFA';
+                        }
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '70%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'Total',
+                                    formatter: function (w) {
+                                        const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                        return new Intl.NumberFormat('fr-FR').format(total) + ' F';
+                                    },
+                                    style: { fontSize: '14px', fontWeight: 'bold', color: '#111827' }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            new ApexCharts(document.querySelector("#payment-chart"), paymentOptions).render();
+
+            // 3. Doctors Activity (Horizontal Bar Chart)
+            const doctorOptions = {
+                chart: {
+                    type: 'bar',
+                    height: 250,
+                    toolbar: { show: false },
+                    fontFamily: 'Inter, sans-serif'
+                },
+                series: [{
+                    name: 'Consultations',
+                    data: @json($doctorCounts)
+                }],
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                        barHeight: '50%',
+                        distributed: true
+                    }
+                },
+                colors: ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                legend: { show: false },
+                dataLabels: {
+                    enabled: true,
+                    style: { fontSize: '12px', colors: ['#fff'] }
+                },
+                xaxis: {
+                    categories: @json($doctorLabels),
+                    labels: {
+                        show: true,
+                        style: { colors: '#6b7280', fontSize: '11px' }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: '#6b7280', fontSize: '12px' }
+                    }
+                },
+                grid: {
+                    borderColor: '#e5e7eb',
+                    strokeDashArray: 4
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " consultation(s)";
+                        }
+                    }
+                }
+            };
+            new ApexCharts(document.querySelector("#doctor-chart"), doctorOptions).render();
+        });
+    </script>
 </x-app-layout>

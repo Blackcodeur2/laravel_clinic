@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Rapports d'activité
     Route::get('reports', [\App\Http\Controllers\ReportController::class, 'monthlyReport'])->name('reports.monthly');
+    Route::get('reports/pdf', [\App\Http\Controllers\ReportController::class, 'pdf'])->name('reports.pdf');
 });
 
 require __DIR__.'/auth.php';

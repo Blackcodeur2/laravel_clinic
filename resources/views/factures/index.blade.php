@@ -128,7 +128,7 @@
                                         </a>
                                         <template x-if="facture.can_delete">
                                             <form method="POST" :action="facture.destroy_url"
-                                                  onsubmit="return confirm('Supprimer cette facture ?')">
+                                                  data-confirm="Voulez-vous vraiment supprimer cette facture ?">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit"

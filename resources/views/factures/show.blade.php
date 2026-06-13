@@ -83,7 +83,7 @@
                                 <td class="px-4 py-3 text-right">
                                     @can('update', $facture)
                                         <form method="POST" action="{{ route('factures.lignes.destroy', [$facture, $ligne]) }}"
-                                              onsubmit="return confirm('Supprimer cette ligne ?')">
+                                              data-confirm="Voulez-vous vraiment supprimer cette ligne de facturation ?">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="text-red-400 hover:text-red-300 transition-colors">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,7 +193,7 @@
                                 </a>
                                 @can('update', $facture)
                                     <form method="POST" action="{{ route('paiements.destroy', $paiement) }}"
-                                          onsubmit="return confirm('Supprimer ce paiement ?')">
+                                          data-confirm="Voulez-vous vraiment annuler/supprimer ce paiement ? Le reste à payer de la facture sera recalculé.">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-400 hover:text-red-300 transition-colors">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

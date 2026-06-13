@@ -7,24 +7,20 @@ use App\Models\Facture;
 use App\Models\Paiement;
 use App\Models\LigneFacture;
 use App\Models\User;
+use App\Services\PdfService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class ReportController extends Controller
 {
+    public function __construct(protected PdfService $pdfService) {}
+
     /**
-     * Display the monthly operations and financial report.
+     * Build the report data array for a given month/year.
      */
-    public function monthlyReport(Request $request): View
+    private function buildReportData(string $month, string $year): array
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isResponsable()) {
-            abort(403, 'Accès non autorisé.');
-        }
-
-        $month = $request->input('month', now()->format('m'));
-        $year = $request->input('year', now()->format('Y'));
-
-        // 1. KPIs
         $totalConsultations = Consultation::whereMonth('date_consultation', $month)
             ->whereYear('date_consultation', $year)
             ->count();
@@ -41,7 +37,6 @@ class ReportController extends Controller
             ->whereYear('date_facture', $year)
             ->sum('reste_a_payer');
 
-        // 2. Doctor performance
         $consultationsPerDoctor = Consultation::whereMonth('date_consultation', $month)
             ->whereYear('date_consultation', $year)
             ->with('medecin')
@@ -50,7 +45,6 @@ class ReportController extends Controller
             ->orderByDesc('count')
             ->get();
 
-        // 3. Payment methods Breakdown
         $paymentsByMethod = Paiement::whereMonth('date_paiement', $month)
             ->whereYear('date_paiement', $year)
             ->selectRaw('mode_paiement, sum(montant) as total')
@@ -58,7 +52,6 @@ class ReportController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        // 4. Top 5 services requested
         $topServices = LigneFacture::whereHas('facture', function ($q) use ($month, $year) {
                 $q->whereMonth('date_facture', $month)
                   ->whereYear('date_facture', $year);
@@ -71,7 +64,6 @@ class ReportController extends Controller
             ->take(5)
             ->get();
 
-        // 5. Top 5 medications dispensed
         $topMedicaments = LigneFacture::whereHas('facture', function ($q) use ($month, $year) {
                 $q->whereMonth('date_facture', $month)
                   ->whereYear('date_facture', $year);
@@ -84,7 +76,7 @@ class ReportController extends Controller
             ->take(5)
             ->get();
 
-        return view('reports.show', compact(
+        return compact(
             'month',
             'year',
             'totalConsultations',
@@ -95,6 +87,36 @@ class ReportController extends Controller
             'paymentsByMethod',
             'topServices',
             'topMedicaments'
-        ));
+        );
+    }
+
+    /**
+     * Display the monthly operations and financial report.
+     */
+    public function monthlyReport(Request $request): View
+    {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isResponsable()) {
+            abort(403, 'Accès non autorisé.');
+        }
+
+        $month = $request->input('month', now()->format('m'));
+        $year  = $request->input('year', now()->format('Y'));
+
+        return view('reports.show', $this->buildReportData($month, $year));
+    }
+
+    /**
+     * Download the monthly report as a PDF file.
+     */
+    public function pdf(Request $request): Response
+    {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isResponsable()) {
+            abort(403, 'Accès non autorisé.');
+        }
+
+        $month = $request->input('month', now()->format('m'));
+        $year  = $request->input('year', now()->format('Y'));
+
+        return $this->pdfService->generateReport($this->buildReportData($month, $year), $month, $year);
     }
 }

@@ -41,4 +41,17 @@ class PdfService
 
         return $pdf->download("recu-{$paiement->id}.pdf");
     }
+
+    /**
+     * Generate an HTTP response with a monthly activity report PDF.
+     */
+    public function generateReport(array $data, string $month, string $year): Response
+    {
+        $pdf = Pdf::loadView('pdf.rapport', $data)
+            ->setPaper('a4', 'portrait');
+
+        $monthName = \Carbon\Carbon::create(null, (int) $month, 1)->format('Y-m');
+
+        return $pdf->download("rapport-activite-{$monthName}.pdf");
+    }
 }

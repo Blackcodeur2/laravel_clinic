@@ -10,6 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full bg-gray-100 font-sans antialiased" x-data="{ sidebarOpen: false }">
+    <x-splash-screen />
 
     {{-- ==================== SIDEBAR ==================== --}}
     <div class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col"
@@ -33,10 +34,12 @@
         {{-- Navigation --}}
         <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
 
-            <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')"
-                        icon="chart-bar">
-                Tableau de bord
-            </x-nav-link>
+            @if(!auth()->user()->isCaissier())
+                <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')"
+                            icon="chart-bar">
+                    Tableau de bord
+                </x-nav-link>
+            @endif
 
             <div class="pt-3 pb-1 px-3">
                 <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest">Facturation</p>
@@ -203,5 +206,46 @@
         </main>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                if (form.hasAttribute('data-confirm')) {
+                    if (form.dataset.confirmed) {
+                        return;
+                    }
+
+                    e.preventDefault();
+
+                    const message = form.getAttribute('data-confirm');
+                    
+                    window.Swal.fire({
+                        title: 'Confirmation',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#4b5563',
+                        confirmButtonText: 'Oui, supprimer',
+                        cancelButtonText: 'Annuler',
+                        reverseButtons: true,
+                        customClass: {
+                            popup: 'rounded-3xl border border-gray-200/50 shadow-2xl p-6 font-sans',
+                            title: 'text-lg font-bold text-gray-900',
+                            htmlContainer: 'text-sm text-gray-500 mt-2',
+                            confirmButton: 'inline-flex justify-center px-5 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ml-3',
+                            cancelButton: 'inline-flex justify-center px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2'
+                        },
+                        buttonsStyling: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.dataset.confirmed = 'true';
+                            form.submit();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

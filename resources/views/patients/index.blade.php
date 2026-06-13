@@ -130,7 +130,7 @@
                                         </template>
                                         <template x-if="patient.can_delete">
                                             <form method="POST" :action="patient.destroy_url"
-                                                  onsubmit="return confirm('Supprimer ce patient ?')">
+                                                  data-confirm="Voulez-vous vraiment supprimer ce patient ? Cette action est irréversible et supprimera tout son historique.">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit"

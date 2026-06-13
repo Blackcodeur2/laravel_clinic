@@ -125,7 +125,7 @@
                                         </template>
                                         <template x-if="med.can_delete">
                                             <form method="POST" :action="med.destroy_url"
-                                                  onsubmit="return confirm('Supprimer ce médicament ?')">
+                                                  data-confirm="Voulez-vous vraiment supprimer ce médicament ?">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit"

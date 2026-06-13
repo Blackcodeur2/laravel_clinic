@@ -236,57 +236,83 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
         {{-- Dernières factures --}}
-        <div class="rounded-2xl bg-gray-50 border border-gray-200 overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <h2 class="text-gray-900 font-semibold">Dernières factures</h2>
+        <div class="rounded-2xl bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <h2 class="text-gray-900 font-semibold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Dernières factures
+                </h2>
                 <a href="{{ route('factures.index') }}"
-                   class="text-blue-600 hover:text-cyan-300 text-sm font-medium transition-colors">
-                    Voir tout →
+                   class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors flex items-center gap-1">
+                    Voir tout
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </a>
             </div>
-            <div class="divide-y divide-slate-800">
+            <div class="divide-y divide-gray-100">
                 @forelse($latestInvoices as $facture)
-                    <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-white transition-colors">
+                    <div class="flex items-center gap-4 px-6 py-4 hover:bg-blue-50/50 transition-colors group cursor-pointer">
                         <div class="flex-1 min-w-0">
-                            <p class="text-gray-900 text-sm font-medium truncate">
+                            <p class="text-gray-900 text-sm font-semibold truncate group-hover:text-blue-700 transition-colors">
                                 {{ $facture->consultation?->patient?->prenom }} {{ $facture->consultation?->patient?->nom }}
                             </p>
-                            <p class="text-gray-400 text-xs">{{ $facture->numero_facture }}</p>
+                            <p class="text-gray-500 text-xs mt-0.5">{{ $facture->numero_facture }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-gray-900 text-sm font-semibold">{{ number_format($facture->montant_total, 0, ',', ' ') }} F</p>
+                            <p class="text-gray-900 text-sm font-bold">{{ number_format($facture->montant_total, 0, ',', ' ') }} F</p>
                             <x-statut-badge :statut="$facture->statut"/>
                         </div>
                     </div>
                 @empty
-                    <p class="text-gray-400 text-sm text-center py-8">Aucune facture</p>
+                    <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                        <svg class="w-12 h-12 mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="text-sm">Aucune facture</p>
+                    </div>
                 @endforelse
             </div>
         </div>
 
         {{-- Derniers patients --}}
-        <div class="rounded-2xl bg-gray-50 border border-gray-200 overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <h2 class="text-gray-900 font-semibold">Nouveaux patients</h2>
+        <div class="rounded-2xl bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <h2 class="text-gray-900 font-semibold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    Nouveaux patients
+                </h2>
                 <a href="{{ route('patients.index') }}"
-                   class="text-blue-600 hover:text-cyan-300 text-sm font-medium transition-colors">
-                    Voir tout →
+                   class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors flex items-center gap-1">
+                    Voir tout
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </a>
             </div>
-            <div class="divide-y divide-slate-800">
+            <div class="divide-y divide-gray-100">
                 @forelse($latestPatients as $patient)
-                    <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-white transition-colors">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-gray-900 text-xs font-bold flex-shrink-0">
+                    <div class="flex items-center gap-4 px-6 py-4 hover:bg-violet-50/50 transition-colors group cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-shadow">
                             {{ strtoupper(substr($patient->prenom, 0, 1)) }}{{ strtoupper(substr($patient->nom, 0, 1)) }}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-gray-900 text-sm font-medium truncate">{{ $patient->prenom }} {{ $patient->nom }}</p>
-                            <p class="text-gray-400 text-xs">{{ $patient->telephone }}</p>
+                            <p class="text-gray-900 text-sm font-semibold truncate group-hover:text-violet-700 transition-colors">{{ $patient->prenom }} {{ $patient->nom }}</p>
+                            <p class="text-gray-500 text-xs mt-0.5">{{ $patient->telephone }}</p>
                         </div>
-                        <span class="text-gray-400 text-xs">{{ $patient->created_at->diffForHumans() }}</span>
+                        <span class="text-gray-400 text-xs bg-gray-100 px-2 py-1 rounded-full group-hover:bg-violet-100 group-hover:text-violet-600 transition-colors">{{ $patient->created_at->diffForHumans() }}</span>
                     </div>
                 @empty
-                    <p class="text-gray-400 text-sm text-center py-8">Aucun patient</p>
+                    <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                        <svg class="w-12 h-12 mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <p class="text-sm">Aucun patient</p>
+                    </div>
                 @endforelse
             </div>
         </div>

@@ -21,12 +21,16 @@
 
         {{-- Logo --}}
         <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-800">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <svg class="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-            </div>
+            @if($clinicSettings->logo_path)
+                <img src="{{ asset('storage/' . $clinicSettings->logo_path) }}" alt="{{ $clinicSettings->nom_clinique }}" class="w-9 h-9 rounded-xl object-cover shadow-lg shadow-blue-500/30" />
+            @else
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <svg class="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </div>
+            @endif
             <div>
                 <span class="text-white font-bold text-lg leading-none">{{ $clinicSettings->nom_clinique }}</span>
                 <p class="text-slate-400 text-xs mt-0.5">{{ $clinicSettings->slogan ?: 'Système de facturation' }}</p>

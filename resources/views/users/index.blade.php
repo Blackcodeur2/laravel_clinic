@@ -21,7 +21,8 @@
                 role_id: '{{ $user->role_id }}',
                 edit_url: '{{ route('users.edit', $user) }}',
                 destroy_url: '{{ route('users.destroy', $user) }}',
-                is_current_user: {{ auth()->id() === $user->id ? 'true' : 'false' }}
+                is_current_user: {{ auth()->id() === $user->id ? 'true' : 'false' }},
+                is_active: {{ $user->is_active ? 'true' : 'false' }}
             },
             @endforeach
         ],
@@ -85,6 +86,7 @@
                             <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Utilisateur</th>
                             <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4 hidden sm:table-cell">Email</th>
                             <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Rôle</th>
+                            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Statut</th>
                             <th class="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">Actions</th>
                         </tr>
                     </thead>
@@ -117,20 +119,36 @@
                                           x-text="user.role_nom || '—'">
                                     </span>
                                 </td>
+                                <td class="px-6 py-4">
+                                    <template x-if="user.is_active">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 me-1.5"></span>
+                                            Actif
+                                        </span>
+                                    </template>
+                                    <template x-if="!user.is_active">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-600 border border-red-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 me-1.5 animate-pulse"></span>
+                                            Inactif
+                                        </span>
+                                    </template>
+                                </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a :href="user.edit_url"
+                                           title="Modifier"
                                            class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center"> 
                                             <i class='bi bi-pencil-square text-lg'></i>
                                         </a>
-                                        <template x-if="!user.is_current_user">
+                                        <template x-if="!user.is_current_user && user.is_active">
                                             <form method="POST" :action="user.destroy_url"
-                                                  data-confirm="Voulez-vous vraiment supprimer cet utilisateur ?">
+                                                  data-confirm="Voulez-vous vraiment désactiver cet utilisateur ? Il ne pourra plus se connecter au système.">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit"
+                                                        title="Désactiver"
                                                         class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center"> 
-                                                    <i class='bi bi-trash text-lg'></i>
+                                                    <i class='bi bi-person-x text-lg'></i>
                                                 </button>
                                             </form>
                                         </template>
@@ -139,7 +157,7 @@
                             </tr>
                         </template>
                         <tr x-show="filteredUsers.length === 0">
-                            <td colspan="4" class="text-center py-12 text-gray-400">Aucun utilisateur</td>
+                            <td colspan="5" class="text-center py-12 text-gray-400">Aucun utilisateur</td>
                         </tr>
                     </tbody>
                 </table>

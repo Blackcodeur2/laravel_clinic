@@ -61,6 +61,16 @@
                     @error('photo_profile')<p class="mt-1 text-red-400 text-xs">{{ $message }}</p>@enderror
                 </div>
 
+                @if($user->id !== auth()->id())
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-700">Compte actif (l'utilisateur peut se connecter)</span>
+                    </label>
+                </div>
+                @endif
+
                 <div class="rounded-xl bg-white border border-gray-300 p-4">
                     <p class="text-gray-500 text-xs mb-3">Laisser vide pour conserver le mot de passe actuel</p>
                     <div class="grid grid-cols-2 gap-5">

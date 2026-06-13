@@ -94,6 +94,7 @@ class UserController extends Controller
             'role_id' => ['required', 'exists:roles,id'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'photo_profile' => ['nullable', 'image', 'max:2048'],
+            'is_active' => ['nullable', 'boolean'],
         ]);
 
         if ($request->hasFile('photo_profile')) {
@@ -109,6 +110,13 @@ class UserController extends Controller
             $validated['password'] = Hash::make($validated['password']);
         }
 
+        // Prevent current user from deactivating themselves
+        if ($user->id === auth()->id()) {
+            $validated['is_active'] = true;
+        } else {
+            $validated['is_active'] = $request->has('is_active');
+        }
+
         $user->update($validated);
 
         return redirect()->route('users.index')
@@ -119,13 +127,14 @@ class UserController extends Controller
     {
         Gate::authorize('delete', $user);
 
-        if ($user->photo_profile) {
-            Storage::disk('public')->delete($user->photo_profile);
+        if ($user->id === auth()->id()) {
+            return redirect()->route('users.index')
+                ->with('error', 'Vous ne pouvez pas désactiver votre propre compte.');
         }
 
-        $user->delete();
+        $user->update(['is_active' => false]);
 
         return redirect()->route('users.index')
-            ->with('success', 'Utilisateur supprimé avec succès.');
+            ->with('success', 'Utilisateur désactivé avec succès.');
     }
 }

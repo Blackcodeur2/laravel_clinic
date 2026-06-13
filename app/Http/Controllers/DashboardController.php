@@ -43,16 +43,26 @@ class DashboardController extends Controller
             ->orderBy('month')
             ->get();
 
+        $monthlyUnpaidData = Facture::selectRaw("DATE_FORMAT(date_facture, '%Y-%m') as month, SUM(reste_a_payer) as total")
+            ->where('date_facture', '>=', $sixMonthsAgo)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
         $revenueMonths = [];
         $revenueTotals = [];
+        $unpaidTotals = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthKey = $date->format('Y-m');
             $monthLabel = ucfirst($date->translatedFormat('M Y'));
             $revenueMonths[] = $monthLabel;
 
-            $matched = $monthlyRevenueData->firstWhere('month', $monthKey);
-            $revenueTotals[] = $matched ? (float)$matched->total : 0.0;
+            $matchedRev = $monthlyRevenueData->firstWhere('month', $monthKey);
+            $revenueTotals[] = $matchedRev ? (float)$matchedRev->total : 0.0;
+
+            $matchedUnpaid = $monthlyUnpaidData->firstWhere('month', $monthKey);
+            $unpaidTotals[] = $matchedUnpaid ? (float)$matchedUnpaid->total : 0.0;
         }
 
         // 2. Payments breakdown by method
@@ -96,6 +106,7 @@ class DashboardController extends Controller
             'recentConsultations',
             'revenueMonths',
             'revenueTotals',
+            'unpaidTotals',
             'paymentLabels',
             'paymentTotals',
             'doctorLabels',

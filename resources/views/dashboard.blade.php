@@ -76,7 +76,7 @@
         <div class="col-span-1 lg:col-span-2 rounded-2xl bg-white border border-gray-200 shadow-sm p-6">
             <h3 class="text-gray-900 font-bold text-base mb-4 flex items-center gap-2">
                 <i class="bi bi-graph-up text-blue-500 text-lg"></i>
-                Évolution des encaissements (6 derniers mois)
+                Évolution des encaissements & restes impayés (6 derniers mois)
             </h3>
             <div id="revenue-chart" style="min-height: 300px;"></div>
         </div>
@@ -169,11 +169,12 @@
             // Theme colors
             const colors = {
                 primary: '#2563eb', // Blue-600
+                danger: '#f43f5e',  // Rose-500
                 success: '#059669', // Emerald-600
                 violet: '#8b5cf6'   // Violet-600
             };
 
-            // 1. Revenue Evolution (Area Chart)
+            // 1. Revenue & Unpaid Evolution (Area Chart)
             const revenueOptions = {
                 chart: {
                     type: 'area',
@@ -185,6 +186,9 @@
                 series: [{
                     name: 'Montant encaissé',
                     data: @json($revenueTotals)
+                }, {
+                    name: 'Reste impayé',
+                    data: @json($unpaidTotals)
                 }],
                 xaxis: {
                     categories: @json($revenueMonths),
@@ -200,12 +204,12 @@
                         style: { colors: '#6b7280', fontSize: '11px' }
                     }
                 },
-                colors: [colors.primary],
+                colors: [colors.primary, colors.danger],
                 fill: {
                     type: 'gradient',
                     gradient: {
                         shadeIntensity: 1,
-                        opacityFrom: 0.4,
+                        opacityFrom: 0.35,
                         opacityTo: 0.05,
                         stops: [0, 100]
                     }

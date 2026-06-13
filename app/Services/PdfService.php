@@ -48,7 +48,11 @@ class PdfService
     public function generateReport(array $data, string $month, string $year): Response
     {
         $pdf = Pdf::loadView('pdf.rapport', $data)
-            ->setPaper('a4', 'portrait');
+            ->setPaper('a4', 'portrait')
+            ->setOption('dpi', 96)
+            ->setOption('defaultFont', 'Helvetica')
+            ->setOption('isRemoteEnabled', true)
+            ->setOption('isHtml5ParserEnabled', true);
 
         $monthName = \Carbon\Carbon::create(null, (int) $month, 1)->format('Y-m');
 

@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0ea5e9">
+    <meta name="theme-color" content="#0A1628">
     <title>{{ $title ?? config('app.name', 'MyClinic') }} — MyClinic</title>
      @laravelPWA
     <link rel="preconnect" href="https://fonts.bunny.net">

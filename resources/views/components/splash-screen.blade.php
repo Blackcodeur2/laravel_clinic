@@ -1,122 +1,294 @@
-<div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 transition-opacity duration-700 ease-out" style="display: none; opacity: 1; pointer-events: auto;">
-    <div class="flex flex-col items-center max-w-sm px-6 text-center">
-        <!-- Logo container with pulsing effect -->
-        <div class="relative mb-6">
-            <div class="absolute -inset-4 rounded-full bg-cyan-500/20 blur-xl animate-pulse"></div>
-            <div class="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-2xl shadow-blue-500/30 animate-bounce-slow">
-                <!-- Premium cross icon -->
-                <svg class="w-12 h-12 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
+<div id="splash-screen" style="display:none; position:fixed; inset:0; z-index:9999; overflow:hidden;">
+
+    {{-- Animated background --}}
+    <div class="splash-bg">
+        <div class="splash-orb splash-orb-1"></div>
+        <div class="splash-orb splash-orb-2"></div>
+        <div class="splash-orb splash-orb-3"></div>
+    </div>
+
+    {{-- Content --}}
+    <div class="splash-content">
+
+        {{-- Logo + glow ring --}}
+        <div class="splash-logo-wrap">
+            <div class="splash-glow-ring"></div>
+            <div class="splash-logo-box">
+                <img src="{{ asset('images/icons/icon-192x192.png') }}"
+                     alt="{{ $clinicSettings->nom_clinique ?? 'Clinique' }}"
+                     class="splash-logo-img">
             </div>
         </div>
 
-        <!-- Clinic name & sub -->
-        <h2 class="text-white font-extrabold text-3xl tracking-tight mb-2 opacity-0 animate-fade-in-up">
-            {{ $clinicSettings->nom_clinique }}
-        </h2>
-        <p class="text-slate-400 text-sm font-medium mb-8 opacity-0 animate-fade-in-up-delay">
-            {{ $clinicSettings->slogan ?: 'Système de gestion médicale' }}
+        {{-- Clinic name --}}
+        <h1 class="splash-title">
+            {{ $clinicSettings->nom_clinique ?? 'MedFacture' }}
+        </h1>
+
+        {{-- Subtitle --}}
+        <p class="splash-subtitle">
+            {{ $clinicSettings->slogan ?: 'Gestion & Facturation Clinique' }}
         </p>
 
-        <!-- Loader -->
-        <div class="w-48 h-1 bg-slate-800 rounded-full overflow-hidden mb-4 opacity-0 animate-fade-in-up-delay-2">
-            <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full animate-loading-bar" style="width: 0%;"></div>
+        {{-- Divider --}}
+        <div class="splash-divider">
+            <span class="splash-divider-line"></span>
+            <span class="splash-divider-icon">✦</span>
+            <span class="splash-divider-line"></span>
         </div>
-        
-        <span class="text-xs text-slate-500 font-semibold tracking-widest uppercase opacity-0 animate-fade-in-up-delay-2">
-            Chargement...
-        </span>
+
+        {{-- Progress bar --}}
+        <div class="splash-progress-track">
+            <div class="splash-progress-bar" id="splash-progress-bar"></div>
+        </div>
+
+        <span class="splash-loading-text">Chargement en cours…</span>
+    </div>
+
+    {{-- Version badge --}}
+    <div class="splash-footer">
+        <span class="splash-version">v{{ config('app.version', '1.0') }}</span>
     </div>
 </div>
 
 <style>
-    @keyframes bounce-slow {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
+    /* ── Base ─────────────────────────────────────── */
+    #splash-screen {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #0A1628;
+        opacity: 1;
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto;
     }
-    .animate-bounce-slow {
-        animation: bounce-slow 3s ease-in-out infinite;
+
+    /* ── Animated gradient bg ─────────────────────── */
+    .splash-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(160deg, #0A1628 0%, #0F2347 50%, #0A1628 100%);
+        overflow: hidden;
     }
-    @keyframes fade-in-up {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .splash-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.35;
+        animation: orbFloat 8s ease-in-out infinite;
     }
-    .animate-fade-in-up {
-        animation: fade-in-up 0.8s ease-out forwards;
-        animation-delay: 0.2s;
+    .splash-orb-1 {
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, #1d4ed8, transparent);
+        top: -100px; left: -100px;
+        animation-delay: 0s;
     }
-    .animate-fade-in-up-delay {
-        animation: fade-in-up 0.8s ease-out forwards;
-        animation-delay: 0.4s;
+    .splash-orb-2 {
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, #06b6d4, transparent);
+        bottom: -80px; right: -80px;
+        animation-delay: 3s;
     }
-    .animate-fade-in-up-delay-2 {
-        animation: fade-in-up 0.8s ease-out forwards;
-        animation-delay: 0.6s;
+    .splash-orb-3 {
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, #3b82f6, transparent);
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        animation-delay: 5s;
     }
-    @keyframes loading-bar {
-        0% { width: 0%; }
-        50% { width: 70%; }
-        100% { width: 100%; }
+    @keyframes orbFloat {
+        0%, 100% { transform: scale(1) translate(0, 0); }
+        50%       { transform: scale(1.15) translate(10px, -10px); }
     }
-    .animate-loading-bar {
-        animation: loading-bar 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+    /* ── Content wrapper ──────────────────────────── */
+    .splash-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+        animation: splashContentIn 0.6s ease-out forwards;
+    }
+    @keyframes splashContentIn {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Logo ─────────────────────────────────────── */
+    .splash-logo-wrap {
+        position: relative;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .splash-glow-ring {
+        position: absolute;
+        width: 140px; height: 140px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #06b6d4, #3b82f6, #1d4ed8, #06b6d4);
+        animation: rotateSpin 4s linear infinite;
+        opacity: 0.6;
+        filter: blur(2px);
+    }
+    @keyframes rotateSpin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
+    .splash-logo-box {
+        position: relative;
+        width: 110px; height: 110px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #0f2347, #1a3a6b);
+        border: 2px solid rgba(6, 182, 212, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+            0 0 40px rgba(6, 182, 212, 0.2),
+            0 20px 60px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255,255,255,0.1);
+        animation: logoPulse 3s ease-in-out infinite;
+    }
+    @keyframes logoPulse {
+        0%, 100% { box-shadow: 0 0 40px rgba(6,182,212,0.2), 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); }
+        50%       { box-shadow: 0 0 70px rgba(6,182,212,0.45), 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); }
+    }
+    .splash-logo-img {
+        width: 72px; height: 72px;
+        border-radius: 16px;
+        object-fit: contain;
+    }
+
+    /* ── Text ─────────────────────────────────────── */
+    .splash-title {
+        font-size: clamp(1.6rem, 5vw, 2.4rem);
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.4rem 0;
+        text-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+        animation: fadeInUp 0.7s ease-out 0.3s both;
+    }
+    .splash-subtitle {
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+        font-weight: 500;
+        color: #7fb3f5;
+        letter-spacing: 0.04em;
+        margin: 0 0 1.8rem 0;
+        animation: fadeInUp 0.7s ease-out 0.5s both;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Divider ──────────────────────────────────── */
+    .splash-divider {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.8rem;
+        animation: fadeInUp 0.7s ease-out 0.6s both;
+    }
+    .splash-divider-line {
+        display: block;
+        width: 60px; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(6,182,212,0.5), transparent);
+    }
+    .splash-divider-icon {
+        color: #06b6d4;
+        font-size: 0.6rem;
+        opacity: 0.7;
+    }
+
+    /* ── Progress bar ─────────────────────────────── */
+    .splash-progress-track {
+        width: min(220px, 60vw);
+        height: 3px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 0.75rem;
+        animation: fadeInUp 0.7s ease-out 0.7s both;
+    }
+    .splash-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #06b6d4, #3b82f6);
+        border-radius: 999px;
+        box-shadow: 0 0 10px rgba(6,182,212,0.6);
+        transition: width 0.1s linear;
+    }
+    .splash-loading-text {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.3);
+        animation: fadeInUp 0.7s ease-out 0.8s both;
+    }
+
+    /* ── Footer ───────────────────────────────────── */
+    .splash-footer {
+        position: absolute;
+        bottom: 2rem;
+        z-index: 1;
+        animation: fadeInUp 0.7s ease-out 1s both;
+    }
+    .splash-version {
+        font-size: 0.6rem;
+        color: rgba(255,255,255,0.15);
+        letter-spacing: 0.1em;
+        font-weight: 500;
     }
 </style>
 
 <script>
-    (function() {
-        const splash = document.getElementById('splash-screen');
-        if (!splash) return;
+(function () {
+    const splash = document.getElementById('splash-screen');
+    if (!splash) return;
 
-        // Check if splash has already been shown in this browser session
-        if (sessionStorage.getItem('splash_shown')) {
-            splash.style.display = 'none';
-            return;
-        }
+    if (sessionStorage.getItem('splash_shown')) {
+        splash.style.display = 'none';
+        return;
+    }
 
-        // Show splash screen immediately
-        splash.style.display = 'flex';
-        // Lock interactions during splash
-        document.body.style.overflow = 'hidden';
+    splash.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                // Fade out
-                splash.style.opacity = '0';
-                splash.style.pointerEvents = 'none';
-                
-                // Restore overflow
-                document.body.style.overflow = '';
-                
-                // Set session storage flag
-                sessionStorage.setItem('splash_shown', 'true');
+    // Animate progress bar
+    const bar = document.getElementById('splash-progress-bar');
+    let progress = 0;
+    const interval = setInterval(function () {
+        progress = Math.min(progress + Math.random() * 8, 92);
+        if (bar) bar.style.width = progress + '%';
+    }, 80);
 
-                // Remove from DOM after fade out transition
-                setTimeout(function() {
-                    splash.remove();
-                }, 700);
-            }, 1200); // 1.2s show time
-        });
+    function hideSplash() {
+        clearInterval(interval);
+        if (bar) bar.style.width = '100%';
+        setTimeout(function () {
+            splash.style.opacity = '0';
+            splash.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+            sessionStorage.setItem('splash_shown', 'true');
+            setTimeout(function () { splash.remove(); }, 800);
+        }, 300);
+    }
 
-        // Fallback in case load event takes too long
-        setTimeout(function() {
-            if (document.body.style.overflow === 'hidden') {
-                splash.style.opacity = '0';
-                splash.style.pointerEvents = 'none';
-                document.body.style.overflow = '';
-                sessionStorage.setItem('splash_shown', 'true');
-                setTimeout(function() {
-                    splash.remove();
-                }, 700);
-            }
-        }, 3000);
-    })();
+    window.addEventListener('load', function () {
+        setTimeout(hideSplash, 1400);
+    });
+
+    // Hard fallback at 4s
+    setTimeout(function () {
+        if (document.body.style.overflow === 'hidden') hideSplash();
+    }, 4000);
+})();
 </script>

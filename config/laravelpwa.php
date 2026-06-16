@@ -6,11 +6,11 @@ return [
         'name' => env('APP_NAME', 'My PWA App'),
         'short_name' => 'PWA',
         'start_url' => '/',
-        'background_color' => '#ffffff',
-        'theme_color' => '#000000',
+        'background_color' => '#0A1628',
+        'theme_color' => '#0A1628',
         'display' => 'standalone',
         'orientation'=> 'any',
-        'status_bar'=> 'black',
+        'status_bar'=> 'black-translucent',
         'icons' => [
             '72x72' => [
                 'path' => '/images/icons/icon-72x72.png',
